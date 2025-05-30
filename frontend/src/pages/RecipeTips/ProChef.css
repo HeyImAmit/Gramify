@@ -1,0 +1,110 @@
+.chefs-section {
+  background-color: #1e1e1e;
+  padding: 60px 20px;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 70px;
+}
+
+.chefs-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.chefs-subtitle {
+  font-size: 1.1rem;
+  color: #cfcfcf;
+  max-width: 680px;
+  margin: 0 auto 40px auto;
+}
+
+.chefs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.chef-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+  gap: 40px;
+  background-color: #2a2a2a;
+  padding: 24px 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.chef-row:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.chef-image {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  flex-shrink: 0;
+}
+
+.chef-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.2);
+}
+
+.chef-info {
+  max-width: 600px;
+  text-align: center; 
+  color: #f0f0f0;
+  padding: 8px 0;
+}
+
+.chef-info h3 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #ffd700;
+}
+
+.chef-info h3 a {
+  color: #ffd700;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.chef-info h3 a:hover {
+  color: #ffec70;
+  text-decoration: underline;
+}
+
+.chef-info p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #dcdcdc;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .chef-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .chef-info {
+    max-width: 100%;
+  }
+}

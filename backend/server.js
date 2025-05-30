@@ -1,10 +1,51 @@
-const express = require("express");
-const cors = require("cors");
-const axios = require("axios");
+import express from "express";
+import cors from "cors";
+import axios from "axios";
+import { connectDB } from "./config/db.js";
+import forumRoute from "./routes/forumRoute.js";
+import authRoute from "./routes/authRoute.js";
+import dotenv from "dotenv";
 
+
+dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+//db connection
+connectDB();
+
+app.use("/api/forum", forumRoute);
+
+app.use("/api/user", authRoute);
+
+app.get("/", (req, res) => {
+  res.send("API Working");
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // FastAPI endpoint
 const FASTAPI_URL = "https://gradientgang-ml.onrender.com/convert";

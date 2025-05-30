@@ -1,0 +1,127 @@
+/* Container */
+.container {
+  max-width: 420px;
+  margin: 80px auto;
+  padding: 40px 32px;
+  border-radius: 20px;
+  backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  color: #ffffff;
+  background-image: linear-gradient(135deg, #3a0ca3, #7209b7);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Title */
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+/* Subtext */
+.subtext {
+  margin: 10px 0;
+  color: #ddd;
+  font-size: 14px;
+}
+
+/* Error Message */
+.error-message {
+  color: #ff6b6b;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Input Fields */
+.input {
+  padding: 12px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  outline: none;
+  transition: background-color 0.3s ease;
+}
+
+.input::placeholder {
+  color: #eee;
+}
+
+.input:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Button */
+.button {
+  padding: 12px;
+  font-size: 16px;
+  background-image: linear-gradient(135deg, #ff6f61, #ff9472);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 111, 97, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 111, 97, 0.6);
+}
+
+/* Switch Text */
+.switchText {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #ffcbf2;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .container {
+    margin: 60px 16px;
+    padding: 28px 20px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .input,
+  .button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .switchText {
+    font-size: 12px;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
