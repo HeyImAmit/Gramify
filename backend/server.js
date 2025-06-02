@@ -4,7 +4,11 @@ import axios from "axios";
 import { connectDB } from "./config/db.js";
 import forumRoute from "./routes/forumRoute.js";
 import authRoute from "./routes/authRoute.js";
+import imageRoute from "./routes/imageRoute.js";
+
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
 
 dotenv.config();
@@ -12,12 +16,18 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 //db connection
 connectDB();
 
 app.use("/api/forum", forumRoute);
 
 app.use("/api/user", authRoute);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/upload", imageRoute);
 
 app.get("/", (req, res) => {
   res.send("API Working");

@@ -231,3 +231,54 @@ body {
   line-height: 1.6;
   margin-bottom: 1rem;
 }
+
+.image-preview {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.image-preview img {
+  max-width: 300px;
+  height: auto;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+}
+
+.image-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1e1e1e;
+  padding: 12px;
+  border-radius: 12px;
+  margin: 16px 0;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+}
+
+.image-preview-card img {
+  height: 64px;
+  width: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.image-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.image-info span {
+  color: #ccc;
+  font-size: 14px;
+}
+
+.remove-btn {
+  background: transparent;
+  color: #ff5a5a;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+}

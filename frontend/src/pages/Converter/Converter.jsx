@@ -8,6 +8,8 @@ function Converter() {
   const [inputText, setInputText] = useState("");
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [imageName, setImageName] = useState("");
   const imageInputRef = useRef(null);
 
   const handleConvert = async () => {
@@ -40,11 +42,33 @@ function Converter() {
     imageInputRef.current.click();
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      console.log("Image selected:", file.name);
+    if (!file) return;
+
+    setPreviewImage(URL.createObjectURL(file));
+    setImageName(file.name);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/upload/upload-image",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+    } catch (err) {
+      console.error("Upload error", err);
     }
+  };
+
+  const handleRemoveImage = () => {
+    setPreviewImage(null);
+    setImageName("");
+    imageInputRef.current.value = "";
   };
 
   const startVoiceInput = () => {
@@ -79,6 +103,18 @@ function Converter() {
             )}
           </div>
         ) : null}
+
+        {previewImage && (
+          <div className="image-preview-card">
+            <img src={previewImage} alt="Preview" />
+            <div className="image-info">
+              <span>{imageName}</span>
+              <button onClick={handleRemoveImage} className="remove-btn">
+                ×
+              </button>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="input-form">
           <input
