@@ -180,20 +180,8 @@ async def extract_and_convert_ingredients(file: UploadFile = File(...)):
 
         logger.info(f"📷 Extracted Recipe Text:\n{extracted_text}")
 
-        # ✅ Call process_ingredient on the full extracted recipe text
-        result = process_ingredient(
-            recipe_text=extracted_text,
-            collection=mongo_collection,
-            df=current_ingredients_df,
-            extractor=recipe_extractor,
-            converter=recipe_converter,
-            confirm=False,
-            confirmed_ingredient=None
-        )
-
         return JSONResponse(content={
-            "extracted_text": extracted_text,
-            "conversion_result": result
+            "extracted_text": extracted_text
         })
 
     except Exception as e:
