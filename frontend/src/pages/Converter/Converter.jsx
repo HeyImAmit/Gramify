@@ -12,34 +12,43 @@ function Converter() {
   const [imageName, setImageName] = useState("");
   const imageInputRef = useRef(null);
 
-  const handleConvert = async () => {
+  const handleConvert = async (
+    confirmed = false,
+    confirmedIngredient = null
+  ) => {
     setIsLoading(true);
-    setTimeout(async () => {
-      try {
-        const response = await axios.post(
-          "https://gradientgang.onrender.com/convert",
-          {
-            recipe_text: inputText,
-          }
+    try {
+      const response = await axios.post(
+        "https://gradientgang-279556857326.asia-south1.run.app/convert/",
+        {
+          recipe_text: inputText,
+          confirm: confirmed,
+          confirmed_ingredient: confirmedIngredient,
+        }
+      );
+
+      const data = response.data;
+
+      if (data.suggested_ingredient) {
+        const userConfirmed = window.confirm(
+          `Ingredient '${inputText}' not found.\nDid you mean '${data.suggested_ingredient}'?`
         );
-        setResult(response.data.result);
-      } catch (error) {
-        console.error("Error:", error);
-        setResult("Error processing request");
-      } finally {
+        if (userConfirmed) {
+          await handleConvert(true, data.suggested_ingredient);
+        } else {
+          setResult("");
+        }
         setIsLoading(false);
+        return;
       }
-    }, 1000);
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
-    await handleConvert();
-  };
-
-  const triggerImageUpload = () => {
-    imageInputRef.current.click();
+      setResult(data.message || "");
+    } catch (error) {
+      console.error("Error:", error);
+      setResult("Error processing request");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleImageUpload = async (e) => {
@@ -50,19 +59,35 @@ function Converter() {
     setImageName(file.name);
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("file", file); // Match FastAPI's `file: UploadFile`
 
+    setIsLoading(true);
     try {
-      await axios.post(
-        "http://localhost:5000/api/upload/upload-image",
+      const response = await axios.post(
+        "https://gradientgang-279556857326.asia-south1.run.app/extract-ingredients/",
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-    } catch (err) {
-      console.error("Upload error", err);
+
+      const data = response.data;
+      setInputText(data.extracted_text || "");
+      setResult(data.conversion_result?.message || "No result returned.");
+    } catch (error) {
+      console.error("Upload error", error);
+      setResult("Failed to extract ingredients from image.");
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
+    await handleConvert();
+  };
+
+  const triggerImageUpload = () => {
+    imageInputRef.current.click();
   };
 
   const handleRemoveImage = () => {
@@ -83,7 +108,7 @@ function Converter() {
           <h1>Gramify</h1>
         </div>
 
-        {result || isLoading ? (
+        {(result || isLoading) && (
           <div className="chat-area">
             {isLoading && (
               <div className="loading-overlay">
@@ -96,13 +121,13 @@ function Converter() {
                 </div>
               </div>
             )}
-            {result && (
+            {result && !isLoading && (
               <div className="response-message">
                 <ReactMarkdown>{result}</ReactMarkdown>
               </div>
             )}
           </div>
-        ) : null}
+        )}
 
         {previewImage && (
           <div className="image-preview-card">

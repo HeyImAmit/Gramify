@@ -36,7 +36,9 @@ app.use("/api/image", imageRoute);
 
 app.post("/convert", async (req, res) => {
   try {
+    console.log("Received request on /convert:", req.body);
     const response = await axios.post(`${FASTAPI_BASE_URL}/convert/`, req.body);
+    console.log("Response from /convert:", response.data);
     res.json(response.data);
   } catch (error) {
     console.error("Error in /convert:", error.message, error.response?.data);
@@ -104,17 +106,18 @@ app.post("/ingredients", async (req, res) => {
   }
 });
 
-app.use(express.static(path.join(__dirname, "public")));
+// 🔴 Frontend serving temporarily disabled for testing
+// app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "public", "index.html"));
+// });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "public", "index.html"));
+// });
 
 const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`✅ Backend server running on http://localhost:${PORT}`);
 });
