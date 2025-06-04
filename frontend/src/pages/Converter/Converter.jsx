@@ -1,10 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-<<<<<<< HEAD
 import { Bot, Sparkles, Mic, ImageIcon } from "lucide-react";
-=======
-import { Bot, Sparkles, Mic, Image as ImageIcon, File } from "lucide-react";
->>>>>>> upstream/main
 import ReactMarkdown from "react-markdown";
 import "./Converter.css";
 
