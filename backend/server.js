@@ -21,7 +21,7 @@ const upload = multer({ dest: "uploads/" });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const FASTAPI_BASE_URL =
-  "https://gradientgang-279556857326.asia-south1.run.app";
+  "http://127.0.0.1:8000";
 
 app.use(express.json());
 app.use(cors());
@@ -38,13 +38,17 @@ app.post("/convert", async (req, res) => {
   try {
     console.log("Received request on /convert:", req.body);
     const response = await axios.post(`${FASTAPI_BASE_URL}/convert/`, req.body);
-    console.log("Response from /convert:", response.data);
+    console.log("Response from FastAPI:", response.data);
     res.json(response.data);
   } catch (error) {
-    console.error("Error in /convert:", error.message, error.response?.data);
+    console.error("❌ Error in /convert:", error.message);
+    if (error.response) {
+      console.error("❌ FastAPI responded with:", error.response.data);
+    }
     res.status(500).json({ error: "Failed to convert recipe ingredient." });
   }
 });
+
 
 app.post("/refresh-data", async (req, res) => {
   try {
