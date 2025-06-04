@@ -3,7 +3,7 @@ import axios from "axios";
 import FormData from "form-data";
 
 const FASTAPI_BASE_URL =
-  "https://gradientgang-279556857326.asia-south1.run.app";
+  "http://127.0.0.1:8000";
 
 export const uploadImage = async (req, res) => {
   if (!req.file) {
