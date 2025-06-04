@@ -1,6 +1,10 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
+<<<<<<< HEAD
 import { Bot, Sparkles, Mic, ImageIcon } from "lucide-react";
+=======
+import { Bot, Sparkles, Mic, Image as ImageIcon, File } from "lucide-react";
+>>>>>>> upstream/main
 import ReactMarkdown from "react-markdown";
 import "./Converter.css";
 
@@ -8,26 +12,159 @@ function Converter() {
   const [inputText, setInputText] = useState("");
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [imageName, setImageName] = useState("");
   const imageInputRef = useRef(null);
 
-  const handleConvert = async () => {
+  // Dropdown toggle state for voice options
+  const [showVoiceOptions, setShowVoiceOptions] = useState(false);
+
+  const handleConvert = async (
+    confirmed = false,
+    confirmedIngredient = null,
+    recipeText = inputText
+  ) => {
     setIsLoading(true);
-    setTimeout(async () => {
-      try {
-        const response = await axios.post(
-          "https://gradientgang.onrender.com/convert",
-          {
-            recipe_text: inputText,
-          }
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/convert/",
+        {
+          recipe_text: recipeText,
+          confirm: confirmed,
+          confirmed_ingredient: confirmedIngredient,
+        }
+      );
+      const data = response.data;
+      if (data.suggested_ingredient) {
+        const userConfirmed = window.confirm(
+          `Ingredient '${inputText}' not found.\nDid you mean '${data.suggested_ingredient}'?`
         );
-        setResult(response.data.result);
-      } catch (error) {
-        console.error("Error:", error);
-        setResult("Error processing request");
-      } finally {
+        if (userConfirmed) {
+          await handleConvert(true, data.suggested_ingredient);
+        } else {
+          await handleConvert(true, null, recipeText);
+        }
         setIsLoading(false);
+        return;
       }
-    }, 1000);
+
+      setResult(data.message || "");
+    } catch (error) {
+      console.error("Error:", error);
+      setResult("Error processing request");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Show preview in UI
+    const previewUrl = URL.createObjectURL(file);
+    setPreviewImage(previewUrl);
+    setImageName(file.name);
+
+    const formData = new FormData();
+    formData.append("image", file);
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/image/upload-image",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const extractedText = response.data.extracted_text;
+      console.log(extractedText);
+      if (extractedText) {
+        setInputText(extractedText);
+        await handleConvert(false, null, extractedText);
+      }
+    } catch (error) {
+      console.error("❌ Error uploading image:", error);
+      setResult("Error uploading and processing image");
+    }finally {
+      setIsLoading(false);
+    }
+  };
+
+  const recognitionRef = useRef(null);
+
+  const startVoiceInput = () => {
+  setShowVoiceOptions(false); // close dropdown on start
+  if (!("webkitSpeechRecognition" in window)) {
+    return(window.confirm("Speech recognition not supported in this browser."));
+  }
+
+  const recognition = new window.webkitSpeechRecognition(); // Chrome only
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = "en-US";
+
+  recognition.onstart = () => {
+    console.log("🎙️ Voice recognition started...");
+    // Stop recognition after 10 seconds
+    setTimeout(() => {
+      recognition.stop();
+      console.log("🛑 Voice recognition stopped after 10 seconds");
+    }, 10000); // 10000 ms = 10 sec
+  };
+
+  recognition.onresult = async (event) => {
+    const speechResult = event.results[0][0].transcript;
+    console.log("🔤 Recognized text:", speechResult);
+    setInputText(speechResult);
+    await handleConvert(false, null, speechResult);
+  };
+
+  recognition.onerror = (event) => {
+    console.error("❌ Speech recognition error:", event.error);
+    setResult("Error in recording audio. Make sure you are running on Chrome Browser.");
+  };
+
+  recognition.onend = () => {
+    console.log("🛑 Voice recognition ended.");
+  };
+
+  recognition.start();
+  recognitionRef.current = recognition;
+};
+
+
+  const voiceInputRef = useRef(null);
+
+  const handleAudioUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setShowVoiceOptions(false); // close dropdown on upload
+
+    const formData = new FormData();
+    formData.append("audio", file);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/voice/upload-audio",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      const transcribedText = response.data.transcribed_text;
+      if (transcribedText) {
+        setInputText(transcribedText);
+        await handleConvert(false, null, transcribedText);
+      }
+    } catch (error) {
+      console.error("❌ Error uploading audio:", error);
+      setResult("Error uploading and processing audio");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -40,15 +177,21 @@ function Converter() {
     imageInputRef.current.click();
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      console.log("Image selected:", file.name);
-    }
+  const handleRemoveImage = () => {
+    setPreviewImage(null);
+    setImageName("");
+    imageInputRef.current.value = "";
   };
 
-  const startVoiceInput = () => {
-    console.log("Voice input started...");
+  // Toggle voice options dropdown
+  const toggleVoiceOptions = () => {
+    setShowVoiceOptions((prev) => !prev);
+  };
+
+  // Handle "Upload Audio File" click in dropdown
+  const handleUploadAudioClick = () => {
+    voiceInputRef.current.click();
+    setShowVoiceOptions(false);
   };
 
   return (
@@ -59,7 +202,7 @@ function Converter() {
           <h1>Gramify</h1>
         </div>
 
-        {result || isLoading ? (
+        {(result || isLoading) && (
           <div className="chat-area">
             {isLoading && (
               <div className="loading-overlay">
@@ -72,13 +215,25 @@ function Converter() {
                 </div>
               </div>
             )}
-            {result && (
+            {result && !isLoading && (
               <div className="response-message">
                 <ReactMarkdown>{result}</ReactMarkdown>
               </div>
             )}
           </div>
-        ) : null}
+        )}
+
+        {previewImage && (
+          <div className="image-preview-card">
+            <img src={previewImage} alt="Preview" />
+            <div className="image-info">
+              <span>{imageName}</span>
+              <button onClick={handleRemoveImage} className="remove-btn">
+                ×
+              </button>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="input-form">
           <div className="input-group">
@@ -126,10 +281,9 @@ function Converter() {
         </form>
 
         <p className="disclaimer-message">
-          *Note these are the measurements taken into consideration <br />1 cup
-          = 16 tbsp &nbsp; | &nbsp; 1 cup = 48 tsp &nbsp; | &nbsp; 1 cup = 240
-          ml &nbsp; | &nbsp; 1 tbsp = 3 tsp &nbsp; | &nbsp; 1 tbsp = 15 ml
-          &nbsp; | &nbsp; 1 tsp = 5 ml
+          *Note these are the measurements taken into consideration <br />
+          1 cup = 16 tbsp &nbsp; | &nbsp; 1 cup = 48 tsp &nbsp; | &nbsp; 1 cup = 240 ml &nbsp; |
+          &nbsp; 1 tbsp = 3 tsp &nbsp; | &nbsp; 1 tbsp = 15 ml &nbsp; | &nbsp; 1 tsp = 5 ml
         </p>
       </div>
     </div>
