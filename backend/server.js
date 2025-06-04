@@ -19,7 +19,7 @@ dotenv.config();
 const app = express();
 const upload = multer({ dest: "uploads/" });
 const __filename = fileURLToPath(import.meta.url);
-const _dirname = path.dirname(__filename);
+const __dirname = path.dirname(__filename);
 const FASTAPI_BASE_URL =
   "http://127.0.0.1:8000";
 
@@ -28,7 +28,7 @@ app.use(cors());
 
 connectDB();
 
-app.use("/uploads", express.static(path.join(_dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/forum", forumRoute);
 app.use("/api/user", authRoute);
 app.use("/api/voice", voiceRoute);
