@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import { Bot, Sparkles, Mic, Image as ImageIcon } from "lucide-react";
+import { Bot, Sparkles, Mic, Image as ImageIcon, File } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import "./Converter.css";
 
@@ -12,23 +12,22 @@ function Converter() {
   const [imageName, setImageName] = useState("");
   const imageInputRef = useRef(null);
 
+  // Dropdown toggle state for voice options
+  const [showVoiceOptions, setShowVoiceOptions] = useState(false);
+
   const handleConvert = async (
     confirmed = false,
-    confirmedIngredient = null
+    confirmedIngredient = null,
+    recipeText = inputText
   ) => {
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        "https://gradientgang-279556857326.asia-south1.run.app/convert/",
-        {
-          recipe_text: inputText,
-          confirm: confirmed,
-          confirmed_ingredient: confirmedIngredient,
-        }
-      );
-
+      const response = await axios.post("http://localhost:5000/convert/", {
+        recipe_text: recipeText,
+        confirm: confirmed,
+        confirmed_ingredient: confirmedIngredient,
+      });
       const data = response.data;
-
       if (data.suggested_ingredient) {
         const userConfirmed = window.confirm(
           `Ingredient '${inputText}' not found.\nDid you mean '${data.suggested_ingredient}'?`
@@ -36,7 +35,7 @@ function Converter() {
         if (userConfirmed) {
           await handleConvert(true, data.suggested_ingredient);
         } else {
-          setResult("");
+          await handleConvert(true, null, recipeText);
         }
         setIsLoading(false);
         return;
@@ -55,28 +54,123 @@ function Converter() {
     const file = e.target.files[0];
     if (!file) return;
 
-    setPreviewImage(URL.createObjectURL(file));
+    // Show preview in UI
+    const previewUrl = URL.createObjectURL(file);
+    setPreviewImage(previewUrl);
     setImageName(file.name);
 
     const formData = new FormData();
-    formData.append("file", file); // Match FastAPI's `file: UploadFile`
+    formData.append("image", file);
 
     setIsLoading(true);
+    setResult("");
     try {
       const response = await axios.post(
-        "https://gradientgang-279556857326.asia-south1.run.app/extract-ingredients/",
+        "http://localhost:5000/api/image/upload-image",
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
-      const data = response.data;
-      setInputText(data.extracted_text || "");
-      setResult(data.conversion_result?.message || "No result returned.");
+      const extractedText = response.data.extracted_text;
+      console.log(extractedText);
+      if (extractedText) {
+        setInputText(extractedText);
+        await handleConvert(false, null, extractedText);
+      }
     } catch (error) {
-      console.error("Upload error", error);
-      setResult("Failed to extract ingredients from image.");
+      console.error("❌ Error uploading image:", error);
+      setResult("Error uploading and processing image");
     } finally {
       setIsLoading(false);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    }
+  };
+
+  const recognitionRef = useRef(null);
+
+  const startVoiceInput = () => {
+    setShowVoiceOptions(false); 
+    if (!("webkitSpeechRecognition" in window)) {
+      return window.confirm(
+        "Speech recognition not supported in this browser."
+      );
+    }
+
+    const recognition = new window.webkitSpeechRecognition(); 
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
+
+    recognition.onstart = () => {
+      console.log("🎙 Voice recognition started...");
+      setTimeout(() => {
+        recognition.stop();
+        console.log("🛑 Voice recognition stopped after 10 seconds");
+      }, 10000);
+    };
+
+    recognition.onresult = async (event) => {
+      const speechResult = event.results[0][0].transcript;
+      console.log("🔤 Recognized text:", speechResult);
+      setInputText(speechResult);
+      await handleConvert(false, null, speechResult);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("❌ Speech recognition error:", event.error);
+      setResult(
+        "Error in recording audio. Make sure you are running on Chrome Browser."
+      );
+    };
+
+    recognition.onend = () => {
+      console.log("🛑 Voice recognition ended.");
+    };
+
+    recognition.start();
+    recognitionRef.current = recognition;
+  };
+
+  const voiceInputRef = useRef(null);
+
+  const handleAudioUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setShowVoiceOptions(false);
+
+    const formData = new FormData();
+    formData.append("audio", file);
+
+    setIsLoading(true);
+    setResult("");
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/voice/upload-audio",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      const transcribedText = response.data.transcribed_text;
+      if (transcribedText) {
+        setInputText(transcribedText);
+        await handleConvert(false, null, transcribedText);
+      }
+    } catch (error) {
+      console.error("❌ Error uploading audio:", error);
+      setResult("Error uploading and processing audio");
+    } finally {
+      setIsLoading(false);
+      if (voiceInputRef.current) {
+        voiceInputRef.current.value = ""; 
+      }
     }
   };
 
@@ -96,8 +190,13 @@ function Converter() {
     imageInputRef.current.value = "";
   };
 
-  const startVoiceInput = () => {
-    console.log("Voice input started...");
+  const toggleVoiceOptions = () => {
+    setShowVoiceOptions((prev) => !prev);
+  };
+
+  const handleUploadAudioClick = () => {
+    voiceInputRef.current.click();
+    setShowVoiceOptions(false);
   };
 
   return (
@@ -153,6 +252,7 @@ function Converter() {
             type="button"
             onClick={triggerImageUpload}
             className="image-button"
+            title="Upload Image"
           >
             <ImageIcon />
           </button>
@@ -163,14 +263,87 @@ function Converter() {
             onChange={handleImageUpload}
             className="hidden-file-input"
           />
-          <button
-            type="button"
-            onClick={startVoiceInput}
-            className="voice-button"
+
+          <div
+            className="voice-dropdown-container"
+            style={{ position: "relative" }}
           >
-            <Mic />
-          </button>
-          <button type="submit" disabled={isLoading} className="submit-button">
+            <button
+              type="button"
+              onClick={toggleVoiceOptions}
+              className="voice-button"
+              title="Voice Options"
+            >
+              <Mic />
+            </button>
+
+            {showVoiceOptions && (
+              <div
+                className="voice-dropdown-menu"
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  background: "#fff",
+                  boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                  borderRadius: "4px",
+                  zIndex: 1000,
+                  padding: "8px 0",
+                  minWidth: "150px",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={startVoiceInput}
+                  className="voice-dropdown-item"
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    padding: "8px 16px",
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Record Audio
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleUploadAudioClick}
+                  className="voice-dropdown-item"
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    padding: "8px 16px",
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Upload Audio File
+                </button>
+              </div>
+            )}
+
+            <input
+              type="file"
+              accept="audio/*"
+              ref={voiceInputRef}
+              onChange={handleAudioUpload}
+              className="hidden-file-input"
+              style={{ display: "none" }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="submit-button"
+            title="Submit"
+          >
             <Sparkles />
           </button>
         </form>
