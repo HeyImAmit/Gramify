@@ -61,9 +61,7 @@ function Converter() {
 
     const formData = new FormData();
     formData.append("image", file);
-
     setIsLoading(true);
-    setResult("");
     try {
       const response = await axios.post(
         "http://localhost:5000/api/image/upload-image",
@@ -86,33 +84,31 @@ function Converter() {
       setResult("Error uploading and processing image");
     } finally {
       setIsLoading(false);
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
     }
   };
 
   const recognitionRef = useRef(null);
 
   const startVoiceInput = () => {
-    setShowVoiceOptions(false); 
+    setShowVoiceOptions(false); // close dropdown on start
     if (!("webkitSpeechRecognition" in window)) {
       return window.confirm(
         "Speech recognition not supported in this browser."
       );
     }
 
-    const recognition = new window.webkitSpeechRecognition(); 
+    const recognition = new window.webkitSpeechRecognition(); // Chrome only
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.lang = "en-US";
 
     recognition.onstart = () => {
-      console.log("🎙 Voice recognition started...");
+      console.log("🎙️ Voice recognition started...");
+      // Stop recognition after 10 seconds
       setTimeout(() => {
         recognition.stop();
         console.log("🛑 Voice recognition stopped after 10 seconds");
-      }, 10000);
+      }, 10000); // 10000 ms = 10 sec
     };
 
     recognition.onresult = async (event) => {
@@ -143,13 +139,11 @@ function Converter() {
     const file = e.target.files[0];
     if (!file) return;
 
-    setShowVoiceOptions(false);
+    setShowVoiceOptions(false); // close dropdown on upload
 
     const formData = new FormData();
     formData.append("audio", file);
 
-    setIsLoading(true);
-    setResult("");
     try {
       const response = await axios.post(
         "http://localhost:5000/api/voice/upload-audio",
@@ -166,11 +160,6 @@ function Converter() {
     } catch (error) {
       console.error("❌ Error uploading audio:", error);
       setResult("Error uploading and processing audio");
-    } finally {
-      setIsLoading(false);
-      if (voiceInputRef.current) {
-        voiceInputRef.current.value = ""; 
-      }
     }
   };
 
@@ -190,10 +179,12 @@ function Converter() {
     imageInputRef.current.value = "";
   };
 
+  // Toggle voice options dropdown
   const toggleVoiceOptions = () => {
     setShowVoiceOptions((prev) => !prev);
   };
 
+  // Handle "Upload Audio File" click in dropdown
   const handleUploadAudioClick = () => {
     voiceInputRef.current.click();
     setShowVoiceOptions(false);
