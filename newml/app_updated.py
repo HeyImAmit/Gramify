@@ -203,19 +203,19 @@ async def voice_input(file: UploadFile = File(...)):
         if not transcript:
             raise HTTPException(status_code=400, detail="Could not transcribe any speech.")
 
-        result = process_ingredient(
-            recipe_text=transcript,
-            collection=mongo_collection,
-            df=current_ingredients_df,
-            extractor=recipe_extractor,
-            converter=recipe_converter,
-            confirm=False,
-            confirmed_ingredient=None
-        )
+        # result = process_ingredient(
+        #     recipe_text=transcript,
+        #     collection=mongo_collection,
+        #     df=current_ingredients_df,
+        #     extractor=recipe_extractor,
+        #     converter=recipe_converter,
+        #     confirm=False,
+        #     confirmed_ingredient=None
+        # )
 
         return {
             "transcript": transcript,
-            "conversion_result": result
+            # "conversion_result": result
         }
     except Exception as e:
         logger.error(f"❌ Error in /voice-input/: {e}", exc_info=True)
