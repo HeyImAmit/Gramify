@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import { Bot, Sparkles, Mic, Image as ImageIcon } from "lucide-react";
+import { Bot, Sparkles, Mic, ImageIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import "./Converter.css";
 
@@ -81,37 +81,48 @@ function Converter() {
         ) : null}
 
         <form onSubmit={handleSubmit} className="input-form">
-          <input
-            type="text"
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="Enter your prompt here..."
-            className="prompt-input"
-            value={inputText}
-          />
-          <button
-            type="button"
-            onClick={triggerImageUpload}
-            className="image-button"
-          >
-            <ImageIcon />
-          </button>
-          <input
-            type="file"
-            accept="image/*"
-            ref={imageInputRef}
-            onChange={handleImageUpload}
-            className="hidden-file-input"
-          />
-          <button
-            type="button"
-            onClick={startVoiceInput}
-            className="voice-button"
-          >
-            <Mic />
-          </button>
-          <button type="submit" disabled={isLoading} className="submit-button">
-            <Sparkles />
-          </button>
+          <div className="input-group">
+            <input
+              type="text"
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Enter your prompt here..."
+              className="prompt-input"
+              value={inputText}
+            />
+            <div className="button-group">
+              <input
+                type="file"
+                accept="image/*"
+                ref={imageInputRef}
+                onChange={handleImageUpload}
+                className="hidden-file-input"
+              />
+              <button
+                type="button"
+                onClick={triggerImageUpload}
+                className="image-button"
+                aria-label="Upload image"
+              >
+                <ImageIcon />
+              </button>
+              <button
+                type="button"
+                onClick={startVoiceInput}
+                className="voice-button"
+                aria-label="Voice input"
+              >
+                <Mic />
+              </button>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="submit-button"
+                aria-label="Submit"
+              >
+                <Sparkles />
+              </button>
+            </div>
+          </div>
         </form>
 
         <p className="disclaimer-message">
