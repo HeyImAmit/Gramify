@@ -103,7 +103,7 @@ function Converter() {
     };
 
     recognition.onerror = () => {
-      setResult("Error in recording audio.");
+      setResult("Error in recording audio. Make sure that you are using chrome browser.");
       setIsRecording(false);
     };
 
