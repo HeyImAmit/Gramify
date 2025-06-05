@@ -13,6 +13,7 @@ from extraction import RecipeMeasurementExtractor, RecipeConverter
 # Import functions from your prediction modules
 from predict_missing_densities_updated import predict_densities, add_prediction_to_db
 from predict_category_update import get_ingredient_category
+from valid_ing import is_valid_ingredient
 
 # Import database functions
 from database import get_mongo_collection, get_ingredients_dataframe, load_ingredients_dataframe
@@ -154,6 +155,13 @@ def process_ingredient(
         else:
             if confirm:
                 try:
+                    # ✅ Step 1: Check if it's a valid ingredient before continuing
+                    if not is_valid_ingredient(final_ingredient_name):
+                        return {
+                            "message": f"'{final_ingredient_name}' does not appear to be a valid cooking ingredient. Please revise and try again.",
+                            "confirm_conversion": False
+                        }
+
                     predicted_name, density, grams_per_cup_pred, cate, typ_pred = predict_densities(final_ingredient_name)
                     add_prediction_to_db(predicted_name, density, grams_per_cup_pred, typ_pred, cate, collection)
                     
@@ -206,10 +214,69 @@ def process_ingredient(
                         "confirm_conversion": False
                     }
             else:
-                return {
-                    "message": f"Ingredient '{final_ingredient_name}' not found. Please provide exact name or confirm to predict.",
-                    "confirm_conversion": False
-                }
+                try:
+                    # ✅ Step 1: Check if it's a valid ingredient before continuing
+                    if not is_valid_ingredient(final_ingredient_name):
+                        return {
+                            "message": f"'{final_ingredient_name}' does not appear to be a valid cooking ingredient. Please revise and try again.",
+                            "confirm_conversion": False
+                        }
+
+                    predicted_name, density, grams_per_cup_pred, cate, typ_pred = predict_densities(final_ingredient_name)
+                    add_prediction_to_db(predicted_name, density, grams_per_cup_pred, typ_pred, cate, collection)
+                    
+                    # global ingredients_df
+                    ingredients_df = load_ingredients_dataframe()
+
+                    row = ingredients_df[ingredients_df['name'] == predicted_name]
+                    if row.empty:
+                        raise ValueError(f"Predicted ingredient '{predicted_name}' not found in reloaded DataFrame.")
+
+                    row = row.iloc[0]
+                    typ_reloaded = row['type'].lower() if 'type' in row and not pd.isna(row['type']) else None
+                    grams_per_cup_reloaded = row['grams_per_cup'] if 'grams_per_cup' in row and not pd.isna(row['grams_per_cup']) else None
+                    density_g_per_ml_reloaded = row['density_g_per_ml'] if 'density_g_per_ml' in row and not pd.isna(row['density_g_per_ml']) else None
+
+                    # Use effective_target_unit here as well
+                    if unit in ["grams","gm","gms","gram","grms","grm","ml","mililitre","mlitre","cc","milliliter","millil","l","litre","liter","quart", "quarts", "qt","quart", "quarts", "qt","pint", "pints", "pt","fl oz", "fluid ounce", "fluid ounces","kilogram","ounce","pound"]:
+                        converted_qty, converted_unit_name = converter.convert_to_vague_units(
+                            quantity, unit, typ_reloaded, grams_per_cup_reloaded, density_g_per_ml_reloaded, target_unit
+                        )
+                        if converted_qty is None:
+                            return {
+                                "message": "Successfully predicted properties, but could not convert to target unit. Ensure quantity and unit are clear.",
+                                "confirm_conversion": True
+                            }
+                        return {
+                            "message": f"{quantity} {unit} of {predicted_name} is approximately {converted_qty:.2f} {converted_unit_name}.",
+                            "confirm_conversion": True
+                        }
+                    else: # Fallback if no effective_target_unit
+                        grams = converter.convert_to_grams(quantity, unit, predicted_name, ingredients_df)
+                        if grams is None:
+                            return {
+                                "message": "Successfully predicted properties, but could not convert. Ensure quantity and unit are clear.",
+                                "confirm_conversion": True
+                            }
+                        elif typ in ["Solid","solid"]:
+                            return {
+                                "message": f"{quantity} {unit} of {final_ingredient_name} weighs approximately {grams:.2f} grams.",
+                                "confirm_conversion": True
+                            }
+                        elif typ in ["Liquid","liquid"]:
+                            return {
+                                "message": f"{quantity} {unit} of {final_ingredient_name} weighs approximately {grams:.2f} mililitre.",
+                                "confirm_conversion": True
+                            }
+                except Exception as e:
+                    return {
+                        "message": f"Could not predict properties for '{final_ingredient_name}'. Error: {str(e)}",
+                        "confirm_conversion": False
+                    }
+                # return {
+                #     "message": f"Ingredient '{final_ingredient_name}' not found. Please provide exact name or confirm to predict.",
+                #     "confirm_conversion": False
+                # }
     
    
     row = df[df['name'] == final_ingredient_name]
