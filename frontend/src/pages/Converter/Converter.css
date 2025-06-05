@@ -426,3 +426,47 @@ body {
     transform: scale(1);
   }
 }
+
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 0, 0, 0.1);
+  color: red;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  animation: pulseBackground 2s infinite;
+}
+
+.mic-glow {
+  width: 12px;
+  height: 12px;
+  background: red;
+  border-radius: 50%;
+  margin-right: 10px;
+  animation: pulseDot 1s infinite;
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+}
+
+@keyframes pulseBackground {
+  0%,
+  100% {
+    background-color: rgba(255, 0, 0, 0.1);
+  }
+  50% {
+    background-color: rgba(255, 0, 0, 0.2);
+  }
+}

@@ -11,6 +11,7 @@ function Converter() {
   const [inputText, setInputText] = useState("");
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [imageName, setImageName] = useState("");
   const [imageUsageCount, setImageUsageCount] = useState(0);
@@ -86,7 +87,12 @@ function Converter() {
     recognition.lang = "en-US";
 
     recognition.onstart = () => {
+      setIsRecording(true);
       setTimeout(() => recognition.stop(), 10000);
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
     };
 
     recognition.onresult = async (event) => {
@@ -98,6 +104,7 @@ function Converter() {
 
     recognition.onerror = () => {
       setResult("Error in recording audio.");
+      setIsRecording(false);
     };
 
     recognition.start();
@@ -209,6 +216,14 @@ function Converter() {
 
   return (
     <div className="chat-container">
+      
+      {isRecording && (
+        <div className="recording-indicator">
+          <div className="mic-glow"></div>
+          <p>Listening... Speak now</p>
+        </div>
+      )}
+
       <div className={`chat-content ${!result && !isLoading ? "initial" : ""}`}>
         <div className="chat-header">
           <Bot className="header-icon" />
