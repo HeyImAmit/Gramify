@@ -360,7 +360,7 @@ body {
 .voice-button.disabled {
   cursor: not-allowed;
   opacity: 0.5;
-  pointer-events: auto; /* keep clickable for alert */
+  pointer-events: none; /* keep clickable for alert */
 }
 
 /* Make sure hidden file inputs remain hidden */
