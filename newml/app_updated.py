@@ -20,6 +20,7 @@ from predict_category_update import get_ingredient_category, get_fasttext_model
 from extraction import RecipeMeasurementExtractor, RecipeConverter
 from google_voice import voice_to_text
 from fastapi.middleware.cors import CORSMiddleware
+from gemini_model_loader import gemini_model
 
 # --- FastAPI Setup ---
 logging.basicConfig(level=logging.INFO)
@@ -33,9 +34,6 @@ recipe_converter = None
 mongo_collection = None
 current_ingredients_df = pd.DataFrame()
 
-# ✅ Configure Gemini API
-genai.configure(api_key="AIzaSyCElD6bbZyjc-a8evE4R-QMG2Vn_vA-JFk")
-gemini_model = genai.GenerativeModel("gemini-1.5-pro")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -51,11 +49,11 @@ async def lifespan(app: FastAPI):
         logger.error(f"❌ Failed to load SpaCy model: {e}")
         raise RuntimeError(f"Could not load SpaCy model: {e}")
 
-    # try:
-    #     ft_model = get_fasttext_model()
-    #     logger.info("✅ fastText model loaded.")
-    # except Exception as e:
-    #     logger.error(f"❌ Failed to load fastText model: {e}")
+    try:
+        ft_model = get_fasttext_model()
+        logger.info("✅ fastText model loaded.")
+    except Exception as e:
+        logger.error(f"❌ Failed to load fastText model: {e}")
 
     recipe_extractor = RecipeMeasurementExtractor(nlp_model=nlp_model)
     recipe_converter = RecipeConverter()
