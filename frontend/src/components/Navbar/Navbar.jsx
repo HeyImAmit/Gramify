@@ -93,7 +93,7 @@ const Navbar = () => {
             )}
           </>
         ) : (
-          <button className="signup" onClick={() => navigate("/login")}>
+          <button className="signup" onClick={() => navigate("/login", { state: { from: location } })}>
             Login
           </button>
         )}
