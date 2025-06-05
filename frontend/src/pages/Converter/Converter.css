@@ -1,9 +1,17 @@
+/* Converter.css */
 html,
 body {
   margin: 0;
   padding: 0;
   height: 100%;
-  /* overflow-x: hidden; */
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 .chat-container {
@@ -13,8 +21,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 1rem;
+  padding: 1rem;
   position: relative;
+  width: 100%;
 }
 
 .chat-content {
@@ -23,7 +32,7 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   flex-grow: 1;
 }
 
@@ -31,24 +40,26 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  padding: 0.5rem;
 }
 
 .chat-header h1 {
-  font-size: 1.875rem;
+  font-size: clamp(1.25rem, 4.5vw, 1.875rem);
   font-weight: bold;
+  margin: 0;
 }
 
 .header-icon {
-  width: 2rem;
-  height: 2rem;
+  width: clamp(1.25rem, 4.5vw, 2rem);
+  height: clamp(1.25rem, 4.5vw, 2rem);
   color: #a855f7;
 }
 
 .chat-area {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 1rem;
+  gap: 1rem;
+  margin-top: 0.5rem;
   flex-grow: 1;
   position: relative;
 }
@@ -56,8 +67,8 @@ body {
 .response-message {
   background-color: #2a2a2a;
   border-radius: 0.75rem;
-  padding: 1.5rem;
-  font-size: 1rem;
+  padding: clamp(0.8rem, 2vw, 1.5rem);
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
   line-height: 1.7;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -72,13 +83,14 @@ body {
   border-radius: 0.5rem;
   overflow-x: auto;
   font-family: "Courier New", Courier, monospace;
+  font-size: clamp(0.8rem, 1.2vw, 0.9rem);
 }
 
 .response-message h1,
 .response-message h2,
 .response-message h3 {
   font-weight: bold;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   margin-bottom: 0.5rem;
 }
 
@@ -89,8 +101,8 @@ body {
 }
 
 .response-message p {
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .loading-overlay {
@@ -119,8 +131,8 @@ body {
 }
 
 .spinner {
-  width: 3rem;
-  height: 3rem;
+  width: clamp(2.5rem, 8vw, 3rem);
+  height: clamp(2.5rem, 8vw, 3rem);
   border: 4px solid #a855f7;
   border-top-color: transparent;
   border-radius: 50%;
@@ -132,8 +144,8 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 1.5rem;
-  height: 1.5rem;
+  width: clamp(1.2rem, 4vw, 1.5rem);
+  height: clamp(1.2rem, 4vw, 1.5rem);
   color: #a855f7;
 }
 
@@ -145,27 +157,37 @@ body {
 
 .loading-content p {
   color: #a855f7;
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
 }
 
 .input-form {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 0.5rem;
   background-color: #111111;
   border-radius: 0.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   box-shadow: 0 0 0 1px #333;
-  /* margin-bottom: 0.5rem; */
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.input-group {
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
 }
 
 .prompt-input {
   flex: 1;
   background: transparent;
   border: none;
-  padding: 0.75rem 1rem;
+  padding: clamp(0.6rem, 1.5vw, 0.75rem) clamp(0.8rem, 1.5vw, 1rem);
   color: white;
   outline: none;
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  border-radius: 0.5rem;
+  min-width: 80px;
 }
 
 .prompt-input::placeholder {
@@ -174,7 +196,11 @@ body {
 
 .prompt-input:focus {
   box-shadow: 0 0 0 2px #a855f7;
-  border-radius: 0.5rem;
+}
+
+.button-group {
+  display: flex;
+  gap: clamp(0.3rem, 1vw, 0.5rem);
 }
 
 .submit-button,
@@ -183,14 +209,15 @@ body {
   background-color: #a855f7;
   border: none;
   border-radius: 0.5rem;
-  padding: 0.75rem;
-  width: 3rem;
-  height: 3rem;
+  min-width: clamp(2.2rem, 7vw, 3rem);
+  height: clamp(2.2rem, 7vw, 3rem);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: background-color 0.2s;
+  flex-shrink: 0;
+  padding: 0;
 }
 
 .submit-button:hover,
@@ -207,8 +234,8 @@ body {
 .submit-button svg,
 .voice-button svg,
 .image-button svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: clamp(1rem, 3.5vw, 1.5rem);
+  height: clamp(1rem, 3.5vw, 1.5rem);
   color: white;
 }
 
@@ -216,69 +243,196 @@ body {
   display: none;
 }
 
-.formula-note {
-  color: #9ca3af;
-  font-size: 0.875rem;
-  text-align: center;
-  margin-bottom: 1rem;
-  margin-top: 0.25rem;
-}
-
 .disclaimer-message {
-  font-size: 0.875rem;
+  font-size: clamp(0.7rem, 1.8vw, 0.875rem);
   color: #9ca3af;
   text-align: center;
   line-height: 1.6;
-  margin-bottom: 1rem;
+  margin: 0.5rem 0;
+  padding: 0 clamp(0.5rem, 2vw, 1rem);
 }
 
-.image-preview {
-  text-align: center;
-  margin-top: 20px;
+/* Specific resolution fixes */
+@media (max-width: 1280px) and (max-height: 800px) {
+  .chat-container {
+    padding: 0.8rem;
+  }
+  
+  .input-group {
+    gap: 0.4rem;
+  }
+  
+  .prompt-input {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+  }
+  
+  .submit-button,
+  .voice-button,
+  .image-button {
+    min-width: 2.6rem;
+    height: 2.6rem;
+  }
+  
+  .submit-button svg,
+  .voice-button svg,
+  .image-button svg {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
 }
 
-.image-preview img {
-  max-width: 300px;
-  height: auto;
-  border-radius: 10px;
-  border: 2px solid #ccc;
+@media (max-width: 430px) and (max-height: 932px) {
+  .chat-container {
+    padding: 0.6rem;
+  }
+  
+  .input-form {
+    padding: 0.4rem;
+  }
+  
+  .prompt-input {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.82rem;
+  }
+  
+  .button-group {
+    gap: 0.2rem;
+  }
+  
+  .submit-button,
+  .voice-button,
+  .image-button {
+    min-width: 2.1rem;
+    height: 2.1rem;
+  }
+  
+  .submit-button svg,
+  .voice-button svg,
+  .image-button svg {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
 }
 
-.image-preview-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #1e1e1e;
-  padding: 12px;
-  border-radius: 12px;
-  margin: 16px 0;
-  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+@media (max-width: 360px) and (max-height: 740px) {
+  .chat-container {
+    padding: 0.5rem;
+  }
+  
+  .chat-header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .header-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  
+  .input-form {
+    padding: 0.35rem;
+  }
+  
+  .prompt-input {
+    padding: 0.45rem 0.6rem;
+    font-size: 0.8rem;
+  }
+  
+  .submit-button,
+  .voice-button,
+  .image-button {
+    min-width: 1.9rem;
+    height: 1.9rem;
+  }
+  
+  .submit-button svg,
+  .voice-button svg,
+  .image-button svg {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+  
+  .disclaimer-message {
+    font-size: 0.65rem;
+  }
 }
 
-.image-preview-card img {
-  height: 64px;
-  width: 64px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #333;
+@media (max-width: 344px) and (max-height: 832px) {
+  .chat-container {
+    padding: 0.4rem;
+  }
+  
+  .chat-header h1 {
+    font-size: 1.15rem;
+  }
+  
+  .header-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+  
+  .input-form {
+    padding: 0.3rem;
+  }
+  
+  .prompt-input {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.78rem;
+  }
+  
+  .button-group {
+    gap: 0.15rem;
+  }
+  
+  .submit-button,
+  .voice-button,
+  .image-button {
+    min-width: 1.8rem;
+    height: 1.8rem;
+  }
+  
+  .submit-button svg,
+  .voice-button svg,
+  .image-button svg {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+  
+  .disclaimer-message {
+    font-size: 0.62rem;
+  }
 }
 
-.image-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.image-info span {
-  color: #ccc;
-  font-size: 14px;
-}
-
-.remove-btn {
-  background: transparent;
-  color: #ff5a5a;
-  font-size: 20px;
-  border: none;
-  cursor: pointer;
+/* 150% zoom adjustments */
+@media (-webkit-device-pixel-ratio: 1.5) {
+  html {
+    font-size: 14px;
+  }
+  
+  .chat-container {
+    padding: 0.8rem;
+  }
+  
+  .input-form {
+    padding: 0.4rem;
+  }
+  
+  .prompt-input {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .submit-button,
+  .voice-button,
+  .image-button {
+    min-width: 2.4rem;
+    height: 2.4rem;
+  }
+  
+  .submit-button svg,
+  .voice-button svg,
+  .image-button svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
 }
