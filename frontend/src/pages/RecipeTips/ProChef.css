@@ -32,7 +32,7 @@
 .chef-row {
   display: flex;
   align-items: center;
-  justify-content: center;  
+  justify-content: center;
   gap: 40px;
   background-color: #2a2a2a;
   padding: 24px 40px;
@@ -66,7 +66,7 @@
 
 .chef-info {
   max-width: 600px;
-  text-align: center; 
+  text-align: center;
   color: #f0f0f0;
   padding: 8px 0;
 }
@@ -96,6 +96,7 @@
   margin: 0;
 }
 
+/* Existing media query for responsiveness */
 @media (max-width: 768px) {
   .chef-row {
     flex-direction: column;
@@ -106,5 +107,33 @@
 
   .chef-info {
     max-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .chef-image {
+    width: 160px;
+    height: 160px;
+  }
+
+  .chef-info h3 {
+    font-size: 1.6rem;
+  }
+
+  .chef-info p {
+    font-size: 1rem;
+  }
+
+  .chefs-title {
+    font-size: 2rem;
+  }
+
+  .chefs-subtitle {
+    font-size: 1rem;
+    padding: 0 10px;
+  }
+
+  .chef-row {
+    padding: 20px 20px;
   }
 }
