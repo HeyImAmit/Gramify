@@ -494,8 +494,8 @@ body {
   .input-form {
     display: flex;
     align-items: center;
-    gap: 0.2rem;               /* slightly smaller gap */
-    padding: 0.4rem;           /* slightly smaller padding */
+    gap: 0.2rem; /* slightly smaller gap */
+    padding: 0.4rem; /* slightly smaller padding */
     width: 100%;
     box-sizing: border-box;
     overflow: hidden;
@@ -547,7 +547,7 @@ body {
   }
 
   .voice-dropdown-menu {
-    min-width: 160px;         /* slightly narrower menu */
+    min-width: 160px; /* slightly narrower menu */
     max-height: 200px;
   }
 
@@ -580,8 +580,8 @@ body {
   .input-form {
     display: flex;
     align-items: center;
-    gap: 0.1rem;               /* remove almost all gap */
-    padding: 0.3rem;           /* smaller padding */
+    gap: 0.1rem; /* remove almost all gap */
+    padding: 0.3rem; /* smaller padding */
     width: 100%;
     box-sizing: border-box;
     overflow: hidden;
@@ -596,7 +596,7 @@ body {
   }
 
   .prompt-input::placeholder {
-    font-size: 0.75rem;         /* smaller placeholder text */
+    font-size: 0.75rem; /* smaller placeholder text */
   }
 
   .submit-button,
@@ -664,8 +664,8 @@ body {
   .input-form {
     display: flex;
     align-items: center;
-    gap: 0.05rem;             /* nearly zero gap */
-    padding: 0.2rem;          /* minimal padding */
+    gap: 0.05rem; /* nearly zero gap */
+    padding: 0.2rem; /* minimal padding */
     width: 100%;
     box-sizing: border-box;
     overflow: hidden;
@@ -680,7 +680,7 @@ body {
   }
 
   .prompt-input::placeholder {
-    font-size: 0.7rem;         /* shrink placeholder further */
+    font-size: 0.7rem; /* shrink placeholder further */
   }
 
   .submit-button,
@@ -754,4 +754,24 @@ body {
 .voice-dropdown-item,
 .remove-btn {
   transition: all 0.2s ease;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.popup-buttons button {
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.popup-buttons .blue-button {
+  background-color: #007bff;
+  color: white;
 }

@@ -21,6 +21,9 @@ function Converter() {
   const [modalType, setModalType] = useState(""); // login or limit
   const [showModal, setShowModal] = useState(false);
 
+  const [suggestedIngredient, setSuggestedIngredient] = useState(null);
+  const [pendingRecipeText, setPendingRecipeText] = useState("");
+
   const imageInputRef = useRef(null);
   const voiceInputRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -103,7 +106,9 @@ function Converter() {
     };
 
     recognition.onerror = () => {
-      setResult("Error in recording audio. Make sure that you are using chrome browser.");
+      setResult(
+        "Error in recording audio. Make sure that you are using chrome browser."
+      );
       setIsRecording(false);
     };
 
@@ -195,17 +200,14 @@ function Converter() {
       });
       const data = response.data;
       if (data.suggested_ingredient) {
-        const userConfirmed = window.confirm(
-          `Did you mean '${data.suggested_ingredient}'?`
-        );
-        if (userConfirmed) {
-          await handleConvert(true, data.suggested_ingredient);
-        } else {
-          await handleConvert(true, null, recipeText);
-        }
-        setIsLoading(false);
+        setSuggestedIngredient(data.suggested_ingredient);
+        setPendingRecipeText(recipeText);
+        setShowModal(true);
+        setModalType("confirm");
+        setModalMessage(`Did you mean '${data.suggested_ingredient}'?`);
         return;
       }
+
       setResult(data.message || "");
     } catch {
       setResult("Error processing request");
@@ -214,9 +216,19 @@ function Converter() {
     }
   };
 
+  const handleSuggestedIngredientResponse = async (accept) => {
+    setShowModal(false);
+    if (accept) {
+      await handleConvert(true, suggestedIngredient);
+    } else {
+      await handleConvert(true, null, pendingRecipeText);
+    }
+    setSuggestedIngredient(null);
+    setPendingRecipeText("");
+  };
+
   return (
     <div className="chat-container">
-      
       {isRecording && (
         <div className="recording-indicator">
           <div className="mic-glow"></div>
@@ -340,16 +352,22 @@ function Converter() {
           *Note these are the measurements taken into consideration
           <br />1 cup = 16 tbsp &nbsp; | &nbsp; 1 cup = 48 tsp &nbsp; | &nbsp; 1
           cup = 240 ml &nbsp; | &nbsp; 1 tbsp = 3 tsp &nbsp; | &nbsp; 1 tbsp =
-          15 ml &nbsp; | &nbsp; 1 tsp = 5 ml &nbsp; | &nbsp; 1 fl oz = 2 tbsp &nbsp; | &nbsp; 1 fl oz = 29.5735 ml &nbsp;
-        | &nbsp; 1 pint = 2 cups &nbsp; | &nbsp; 1 pint = 473.176 ml &nbsp; 
-        | &nbsp; 1 quart = 2 pints &nbsp; | &nbsp; 1 quart = 4 cups &nbsp;
-        | &nbsp; 1 gallon = 4 quarts &nbsp; | &nbsp; 1 gallon = 16 cups &nbsp; | &nbsp; 1 gallon = 3785.41 ml &nbsp; 
-        | &nbsp; 1 liter = 1000 ml &nbsp; | &nbsp; 1 liter ≈ 4.22675 cups &nbsp; | &nbsp; 1 liter ≈ 67.628 fl oz &nbsp; 
-        | &nbsp; 1 milliliter = 0.202884 tsp &nbsp; | &nbsp; 1 milliliter = 0.067628 fl oz &nbsp; | &nbsp; 1 milliliter = 0.00422675 cups &nbsp; 
-        | &nbsp; 1 pound = 16 oz &nbsp; | &nbsp; 1 pound = 453.592 g &nbsp; | &nbsp; 1 pound = 0.453592 kg &nbsp; 
-        | &nbsp; 1 oz = 28.3495 g &nbsp; | &nbsp; 1 oz = 0.0625 lb &nbsp; | &nbsp; 1 oz = 0.0283495 kg &nbsp; 
-        | &nbsp; 1 kilogram = 1000 g &nbsp; | &nbsp; 1 kilogram ≈ 2.20462 lb &nbsp; | &nbsp; 1 kilogram ≈ 35.274 oz &nbsp; 
-        | &nbsp; 1 gram ≈ 0.035274 oz &nbsp; | &nbsp; 1 gram ≈ 0.00220462 lb &nbsp; | &nbsp; 1 gram = 0.001 kg &nbsp; |
+          15 ml &nbsp; | &nbsp; 1 tsp = 5 ml &nbsp; | &nbsp; 1 fl oz = 2 tbsp
+          &nbsp; | &nbsp; 1 fl oz = 29.5735 ml &nbsp; | &nbsp; 1 pint = 2 cups
+          &nbsp; | &nbsp; 1 pint = 473.176 ml &nbsp; | &nbsp; 1 quart = 2 pints
+          &nbsp; | &nbsp; 1 quart = 4 cups &nbsp; | &nbsp; 1 gallon = 4 quarts
+          &nbsp; | &nbsp; 1 gallon = 16 cups &nbsp; | &nbsp; 1 gallon = 3785.41
+          ml &nbsp; | &nbsp; 1 liter = 1000 ml &nbsp; | &nbsp; 1 liter ≈ 4.22675
+          cups &nbsp; | &nbsp; 1 liter ≈ 67.628 fl oz &nbsp; | &nbsp; 1
+          milliliter = 0.202884 tsp &nbsp; | &nbsp; 1 milliliter = 0.067628 fl
+          oz &nbsp; | &nbsp; 1 milliliter = 0.00422675 cups &nbsp; | &nbsp; 1
+          pound = 16 oz &nbsp; | &nbsp; 1 pound = 453.592 g &nbsp; | &nbsp; 1
+          pound = 0.453592 kg &nbsp; | &nbsp; 1 oz = 28.3495 g &nbsp; | &nbsp; 1
+          oz = 0.0625 lb &nbsp; | &nbsp; 1 oz = 0.0283495 kg &nbsp; | &nbsp; 1
+          kilogram = 1000 g &nbsp; | &nbsp; 1 kilogram ≈ 2.20462 lb &nbsp; |
+          &nbsp; 1 kilogram ≈ 35.274 oz &nbsp; | &nbsp; 1 gram ≈ 0.035274 oz
+          &nbsp; | &nbsp; 1 gram ≈ 0.00220462 lb &nbsp; | &nbsp; 1 gram = 0.001
+          kg &nbsp; |
         </p>
       </div>
 
@@ -357,6 +375,7 @@ function Converter() {
         <div className="popup-modal">
           <div className="popup-box">
             <p>{modalMessage}</p>
+
             {modalType === "login" ? (
               <div className="popup-buttons">
                 <button onClick={() => (window.location.href = "/login")}>
@@ -364,8 +383,22 @@ function Converter() {
                 </button>
                 <button onClick={() => setShowModal(false)}>Later</button>
               </div>
-            ) : (
+            ) : modalType === "limit" ? (
               <button onClick={() => setShowModal(false)}>Close</button>
+            ) : (
+              <div className="popup-buttons">
+                <button
+                  className="blue-button"
+                  onClick={() => handleSuggestedIngredientResponse(true)}
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={() => handleSuggestedIngredientResponse(false)}
+                >
+                  No
+                </button>
+              </div>
             )}
           </div>
         </div>
