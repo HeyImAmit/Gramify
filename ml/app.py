@@ -20,7 +20,6 @@ from google_voice import voice_to_text
 from fastapi.middleware.cors import CORSMiddleware
 from gemini_model_loader import gemini_model
 from dotenv import load_dotenv
-import os
 
 load_dotenv()  # Loads variables from .env
 
