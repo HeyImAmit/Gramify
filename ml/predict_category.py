@@ -16,18 +16,21 @@ load_dotenv()
 
 _ft_model = None  # global variable
 
-def download_fasttext_model(gcs_path: str, local_path: str = "fasttext.vec"):
-    """Download model from GCS if not already present locally."""
-    if os.path.exists(local_path):
-        return local_path
+def download_fasttext_model():
+    local_path = "/tmp/crawl-300d-2M.vec"
+    bucket_name = "gramify-fasttext-gradientgang"
+    blob_name = "crawl-300d-2M.vec"
 
-    print("⬇️ Downloading fastText model from GCS...")
-    storage_client = storage.Client()
-    bucket_name, blob_name = gcs_path.replace("gs://", "").split("/", 1)
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(blob_name)
-    blob.download_to_filename(local_path)
-    print("✅ Download complete.")
+    if not os.path.exists(local_path):
+        print("⬇️ Downloading fastText model from GCS...")
+        client = storage.Client()
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(blob_name)
+        blob.download_to_filename(local_path)
+        print("✅ Downloaded fastText model to:", local_path)
+    else:
+        print("✅ fastText model already present locally.")
+
     return local_path
 
 def get_fasttext_model():
