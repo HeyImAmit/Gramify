@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 from pymongo.errors import ConnectionFailure
 from typing import Tuple
 from config import MONGO_URI
-from predict_category_update import get_ingredient_category
+from predict_category import get_ingredient_category
 
 def get_mongo_collection_for_prediction():
     try:
