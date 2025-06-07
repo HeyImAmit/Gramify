@@ -14,31 +14,12 @@ from config import MONGO_URI
 
 load_dotenv()
 
-_ft_model = None  # global variable
-
-def download_fasttext_model():
-    local_path = "/tmp/crawl-300d-2M.vec"
-    bucket_name = "gramify-fasttext-gradientgang"
-    blob_name = "crawl-300d-2M.vec"
-
-    if not os.path.exists(local_path):
-        print("⬇️ Downloading fastText model from GCS...")
-        client = storage.Client()
-        bucket = client.bucket(bucket_name)
-        blob = bucket.blob(blob_name)
-        blob.download_to_filename(local_path)
-        print("✅ Downloaded fastText model to:", local_path)
-    else:
-        print("✅ fastText model already present locally.")
-
-    return local_path
+_ft_model = None  # global cache
 
 def get_fasttext_model():
-    """Load the fastText model once, using GCS download if needed."""
     global _ft_model
     if _ft_model is None:
-        gcs_path = os.getenv("FASTTEXT_GCS_PATH")
-        local_path = download_fasttext_model(gcs_path)
+        local_path = "/home/b523005/Gramify/ml/models/crawl-300d-2M.vec"
         print("🔄 Loading fastText model...")
         _ft_model = KeyedVectors.load_word2vec_format(local_path, binary=False)
         print("✅ fastText model loaded.")
