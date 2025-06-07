@@ -11,10 +11,10 @@ import os
 from PIL import Image
 import google.generativeai as genai
 import io
-from main_update import process_ingredient
+from main import process_ingredient
 from config import SPACY_MODEL
 from database import get_mongo_collection, get_ingredients_dataframe, load_ingredients_dataframe
-from predict_category_update import get_ingredient_category, get_fasttext_model
+from predict_category import get_ingredient_category, get_fasttext_model
 from extraction import RecipeMeasurementExtractor, RecipeConverter
 from google_voice import voice_to_text
 from fastapi.middleware.cors import CORSMiddleware
