@@ -19,6 +19,13 @@ from extraction import RecipeMeasurementExtractor, RecipeConverter
 from google_voice import voice_to_text
 from fastapi.middleware.cors import CORSMiddleware
 from gemini_model_loader import gemini_model
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Loads variables from .env
+
+# Set env var for Google client
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
