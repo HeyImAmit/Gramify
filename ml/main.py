@@ -6,8 +6,8 @@ from typing import Optional, Tuple, Set, List, Dict, Union
 
 from extraction import RecipeMeasurementExtractor, RecipeConverter
 
-from predict_missing_densities_updated import predict_densities, add_prediction_to_db
-from predict_category_update import get_ingredient_category
+from predict_missing_densities import predict_densities, add_prediction_to_db
+from predict_category import get_ingredient_category
 from valid_ing import is_valid_ingredient
 
 from database import get_mongo_collection, get_ingredients_dataframe, load_ingredients_dataframe
