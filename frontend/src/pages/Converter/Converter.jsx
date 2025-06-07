@@ -340,7 +340,16 @@ function Converter() {
           *Note these are the measurements taken into consideration
           <br />1 cup = 16 tbsp &nbsp; | &nbsp; 1 cup = 48 tsp &nbsp; | &nbsp; 1
           cup = 240 ml &nbsp; | &nbsp; 1 tbsp = 3 tsp &nbsp; | &nbsp; 1 tbsp =
-          15 ml &nbsp; | &nbsp; 1 tsp = 5 ml
+          15 ml &nbsp; | &nbsp; 1 tsp = 5 ml &nbsp; | &nbsp; 1 fl oz = 2 tbsp &nbsp; | &nbsp; 1 fl oz = 29.5735 ml &nbsp;
+        | &nbsp; 1 pint = 2 cups &nbsp; | &nbsp; 1 pint = 473.176 ml &nbsp; 
+        | &nbsp; 1 quart = 2 pints &nbsp; | &nbsp; 1 quart = 4 cups &nbsp;
+        | &nbsp; 1 gallon = 4 quarts &nbsp; | &nbsp; 1 gallon = 16 cups &nbsp; | &nbsp; 1 gallon = 3785.41 ml &nbsp; 
+        | &nbsp; 1 liter = 1000 ml &nbsp; | &nbsp; 1 liter ≈ 4.22675 cups &nbsp; | &nbsp; 1 liter ≈ 67.628 fl oz &nbsp; 
+        | &nbsp; 1 milliliter = 0.202884 tsp &nbsp; | &nbsp; 1 milliliter = 0.067628 fl oz &nbsp; | &nbsp; 1 milliliter = 0.00422675 cups &nbsp; 
+        | &nbsp; 1 pound = 16 oz &nbsp; | &nbsp; 1 pound = 453.592 g &nbsp; | &nbsp; 1 pound = 0.453592 kg &nbsp; 
+        | &nbsp; 1 oz = 28.3495 g &nbsp; | &nbsp; 1 oz = 0.0625 lb &nbsp; | &nbsp; 1 oz = 0.0283495 kg &nbsp; 
+        | &nbsp; 1 kilogram = 1000 g &nbsp; | &nbsp; 1 kilogram ≈ 2.20462 lb &nbsp; | &nbsp; 1 kilogram ≈ 35.274 oz &nbsp; 
+        | &nbsp; 1 gram ≈ 0.035274 oz &nbsp; | &nbsp; 1 gram ≈ 0.00220462 lb &nbsp; | &nbsp; 1 gram = 0.001 kg &nbsp; |
         </p>
       </div>
 
