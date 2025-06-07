@@ -183,12 +183,12 @@ def process_ingredient(
                                 "message": "Successfully predicted properties, but could not convert. Ensure quantity and unit are clear.",
                                 "confirm_conversion": True
                             }
-                        elif typ in ["Solid","solid"]:
+                        elif typ_reloaded in ["Solid","solid"]:
                             return {
                                 "message": f"{quantity} {unit} of {final_ingredient_name} weighs approximately {grams:.2f} grams.",
                                 "confirm_conversion": True
                             }
-                        elif typ in ["Liquid","liquid"]:
+                        elif typ_reloaded in ["Liquid","liquid"]:
                             return {
                                 "message": f"{quantity} {unit} of {final_ingredient_name} weighs approximately {grams:.2f} mililitre.",
                                 "confirm_conversion": True
@@ -240,12 +240,12 @@ def process_ingredient(
                                 "message": "Successfully predicted properties, but could not convert. Ensure quantity and unit are clear.",
                                 "confirm_conversion": True
                             }
-                        elif typ in ["Solid","solid"]:
+                        elif typ_reloaded in ["Solid","solid"]:
                             return {
                                 "message": f"{quantity} {unit} of {final_ingredient_name} weighs approximately {grams:.2f} grams.",
                                 "confirm_conversion": True
                             }
-                        elif typ in ["Liquid","liquid"]:
+                        elif typ_reloaded in ["Liquid","liquid"]:
                             return {
                                 "message": f"{quantity} {unit} of {final_ingredient_name} weighs approximately {grams:.2f} mililitre.",
                                 "confirm_conversion": True
