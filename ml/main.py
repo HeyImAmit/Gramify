@@ -39,14 +39,13 @@ def get_suggestion(ingredient: str, known_ingredients: list) -> Optional[str]:
 
 def process_ingredient(
     recipe_text: str,
-    collection, 
-    df: pd.DataFrame, 
+    collection,  
     extractor: RecipeMeasurementExtractor, 
     converter: RecipeConverter, 
     confirm: bool = False,
     confirmed_ingredient: Optional[str] = None
 ) -> dict:
-    
+    df = load_ingredients_dataframe()
     results = extractor.extract_measurements(recipe_text)
 
     if not results or results[0]['quantity'] is None or results[0]['unit'] is None:
@@ -147,7 +146,7 @@ def process_ingredient(
                             "message": f"'{final_ingredient_name}' does not appear to be a valid cooking ingredient. Please revise and try again.",
                             "confirm_conversion": False
                         }
-
+                    
                     predicted_name, density, grams_per_cup_pred, cate, typ_pred = predict_densities(final_ingredient_name)
                     add_prediction_to_db(predicted_name, density, grams_per_cup_pred, typ_pred, cate, collection)
                     
