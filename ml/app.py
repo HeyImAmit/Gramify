@@ -106,7 +106,6 @@ async def convert_recipe_ingredient(request: ConvertRequest):
         result = process_ingredient(
             recipe_text=request.recipe_text,
             collection=mongo_collection,
-            df=current_ingredients_df,
             extractor=recipe_extractor,
             converter=recipe_converter,
             confirm=request.confirm,
