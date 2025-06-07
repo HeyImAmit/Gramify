@@ -11,14 +11,15 @@ from pymongo.errors import ConnectionFailure
 import os
 from config import MONGO_URI
 
-_ft_model = None  
+_ft_model = None  # global variable
+
+FASTTEXT_MODEL_PATH = os.path.join(os.path.dirname(__file__), "models", "crawl-300d-2M.vec")
 
 def get_fasttext_model():
     global _ft_model
     if _ft_model is None:
         print("🔄 Loading fastText model...")
-        ft_path = os.path.join(r"C:\100 Days of ML\Gramify\new\crawl-300d-2M.vec")
-        _ft_model = KeyedVectors.load_word2vec_format(ft_path, binary=False)
+        _ft_model = KeyedVectors.load_word2vec_format(FASTTEXT_MODEL_PATH, binary=False)
         print("✅ fastText model loaded.")
     return _ft_model
 
