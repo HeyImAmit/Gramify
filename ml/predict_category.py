@@ -19,7 +19,7 @@ _ft_model = None  # global cache
 def get_fasttext_model():
     global _ft_model
     if _ft_model is None:
-        local_path = "/home/b523005/Gramify/ml/models/crawl-300d-2M.vec"
+        local_path = "/home/subhamomm836/Gramify/ml/models/crawl-300d-2M.vec"
         print("🔄 Loading fastText model...")
         _ft_model = KeyedVectors.load_word2vec_format(local_path, binary=False)
         print("✅ fastText model loaded.")
