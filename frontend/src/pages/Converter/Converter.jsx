@@ -6,6 +6,8 @@ import { useStore } from "../../context/StoreContext";
 import "./Converter.css";
 
 function Converter() {
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+
   const { user } = useStore();
 
   const [inputText, setInputText] = useState("");
@@ -54,7 +56,7 @@ function Converter() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/image/upload-image",
+        `${API_BASE_URL}/api/image/upload-image`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -132,7 +134,7 @@ function Converter() {
     formData.append("audio", file);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/voice/upload-audio",
+        `${API_BASE_URL}/api/voice/upload-audio`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -193,7 +195,7 @@ function Converter() {
   ) => {
     setIsLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/convert/", {
+      const response = await axios.post(`${API_BASE_URL}/convert/`, {
         recipe_text: recipeText,
         confirm: confirmed,
         confirmed_ingredient: confirmedIngredient,

@@ -5,7 +5,9 @@ import axios from "axios";
 export const StoreContext = createContext(null);
 
 export const StoreContextProvider = ({ children }) => {
-  const [url, setUrl] = useState("http://localhost:5000");
+  const [url, setUrl] = useState(
+    import.meta.env.VITE_API_URL || "http://localhost:5000"
+  );
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
@@ -14,6 +16,15 @@ export const StoreContextProvider = ({ children }) => {
   useEffect(() => {
     axios.defaults.baseURL = url;
   }, [url]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  }, [user]);
 
   const login = async (email, password) => {
     try {

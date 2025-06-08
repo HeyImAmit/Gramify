@@ -21,7 +21,7 @@ const upload = multer({ dest: "uploads/" });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const FASTAPI_BASE_URL =
-  "http://127.0.0.1:8000";
+  "http://34.55.80.43:8000";
 
 app.use(express.json());
 app.use(cors());
@@ -110,16 +110,16 @@ app.post("/ingredients", async (req, res) => {
   }
 });
 
-// 🔴 Frontend serving temporarily disabled for testing
-// app.use(express.static(path.join(__dirname, "public")));
+// Frontend serving temporarily disabled for testing
+app.use(express.static(path.join(__dirname, "public")));
 
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "public", "index.html"));
-// });
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "public", "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {
