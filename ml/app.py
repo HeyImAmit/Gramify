@@ -16,10 +16,11 @@ from config import SPACY_MODEL
 from database import get_mongo_collection, get_ingredients_dataframe, load_ingredients_dataframe
 from predict_category import get_ingredient_category, get_fasttext_model
 from extraction import RecipeMeasurementExtractor, RecipeConverter
-from google_voice import voice_to_text
+from google_voice import transcribe_audio
 from fastapi.middleware.cors import CORSMiddleware
 from gemini_model_loader import gemini_model
 from dotenv import load_dotenv
+from pydub import AudioSegment
 
 load_dotenv()  # Loads variables from .env
 
