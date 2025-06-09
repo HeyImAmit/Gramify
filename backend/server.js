@@ -20,7 +20,7 @@ const app = express();
 const upload = multer({ dest: "uploads/" });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const FASTAPI_BASE_URL = "http://35.200.158.34:8000";
+const FASTAPI_BASE_URL = "http://34.42.75.172:8000";
 
 app.use(express.json());
 app.use(cors());
