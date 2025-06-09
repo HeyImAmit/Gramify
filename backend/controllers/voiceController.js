@@ -35,7 +35,7 @@ import axios from "axios";
 import fs from "fs";
 import FormData from "form-data";
 
-const FASTAPI_BASE_URL = "http://127.0.0.1:8000";
+const FASTAPI_BASE_URL = "http://35.200.158.34:8000";
 
 export const handleVoiceInput = async (req, res) => {
   if (!req.file || !req.file.path) {

@@ -47,7 +47,7 @@ import axios from "axios";
 import FormData from "form-data";
 
 const FASTAPI_BASE_URL =
-  "http://127.0.0.1:8000";
+  "http://35.200.158.34:8000";
 
 export const uploadImage = async (req, res) => {
   if (!req.file) {

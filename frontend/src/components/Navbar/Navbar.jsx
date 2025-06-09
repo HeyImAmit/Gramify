@@ -29,6 +29,8 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setDropdownOpen(false);
+    localStorage.removeItem("imageUsageCount");
+    localStorage.removeItem("audioUsageCount");
     navigate("/");
   };
 
@@ -93,7 +95,10 @@ const Navbar = () => {
             )}
           </>
         ) : (
-          <button className="signup" onClick={() => navigate("/login", { state: { from: location } })}>
+          <button
+            className="signup"
+            onClick={() => navigate("/login", { state: { from: location } })}
+          >
             Login
           </button>
         )}

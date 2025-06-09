@@ -16,8 +16,17 @@ function Converter() {
   const [isRecording, setIsRecording] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [imageName, setImageName] = useState("");
-  const [imageUsageCount, setImageUsageCount] = useState(0);
-  const [audioUsageCount, setAudioUsageCount] = useState(0);
+
+  const [imageUsageCount, setImageUsageCount] = useState(() => {
+    const saved = localStorage.getItem("imageUsageCount");
+    return saved ? parseInt(saved) : 0;
+  });
+
+  const [audioUsageCount, setAudioUsageCount] = useState(() => {
+    const saved = localStorage.getItem("audioUsageCount");
+    return saved ? parseInt(saved) : 0;
+  });
+
   const [showVoiceOptions, setShowVoiceOptions] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState(""); // login or limit
@@ -67,7 +76,11 @@ function Converter() {
         setInputText(extractedText);
         await handleConvert(false, null, extractedText);
       }
-      setImageUsageCount((count) => count + 1);
+      setImageUsageCount((count) => {
+        const newCount = count + 1;
+        localStorage.setItem("imageUsageCount", newCount);
+        return newCount;
+      });
     } catch {
       setResult("Error uploading and processing image");
     } finally {
@@ -145,7 +158,11 @@ function Converter() {
         setInputText(transcribedText);
         await handleConvert(false, null, transcribedText);
       }
-      setAudioUsageCount((count) => count + 1);
+      setAudioUsageCount((count) => {
+        const newCount = count + 1;
+        localStorage.setItem("audioUsageCount", newCount);
+        return newCount;
+      });
     } catch {
       setResult("Error uploading and processing audio");
     }
