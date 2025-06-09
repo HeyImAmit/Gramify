@@ -1,40 +1,13 @@
 # --- google_voice.py ---
-import pyaudio
-import wave
 from google.cloud import speech
 
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 16000
-CHUNK = 1024
-RECORD_SECONDS = 5
-WAVE_OUTPUT_FILENAME = "temp.wav"
+RATE = 16000  # Must match the converted audio sample rate
 
-def record_audio(filename=WAVE_OUTPUT_FILENAME):
-    p = pyaudio.PyAudio()
-    stream = p.open(format=FORMAT, channels=CHANNELS,
-                    rate=RATE, input=True,
-                    frames_per_buffer=CHUNK)
-
-    print("🎤 Recording for 5 seconds...")
-    frames = []
-    for _ in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        data = stream.read(CHUNK)
-        frames.append(data)
-
-    print("✅ Done recording.")
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
-
-    wf = wave.open(filename, 'wb')
-    wf.setnchannels(CHANNELS)
-    wf.setsampwidth(p.get_sample_size(FORMAT))
-    wf.setframerate(RATE)
-    wf.writeframes(b''.join(frames))
-    wf.close()
-
-def transcribe_audio(filename=WAVE_OUTPUT_FILENAME):
+def transcribe_audio(filename: str) -> str:
+    """
+    Transcribes the given WAV audio file using Google Cloud Speech-to-Text API.
+    Assumes audio is 16kHz, LINEAR16 PCM WAV.
+    """
     client = speech.SpeechClient()
 
     with open(filename, "rb") as audio_file:
@@ -44,15 +17,19 @@ def transcribe_audio(filename=WAVE_OUTPUT_FILENAME):
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
         sample_rate_hertz=RATE,
-        language_code="en-US"
+        language_code="en-US",
+        enable_automatic_punctuation=True,  # Optional: adds punctuation to transcript
     )
 
     print("🧠 Transcribing with Google Cloud...")
     response = client.recognize(config=config, audio=audio)
 
-    transcripts = [result.alternatives[0].transcript for result in response.results]
-    return " ".join(transcripts)
+    if not response.results:
+        print("⚠️ No speech detected in the audio.")
+        return ""
 
-def voice_to_text():
-    record_audio()
-    return transcribe_audio()
+    transcripts = [result.alternatives[0].transcript for result in response.results]
+    combined_transcript = " ".join(transcripts)
+    print("Transcript:", combined_transcript)
+    return combined_transcript
+
