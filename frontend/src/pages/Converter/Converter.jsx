@@ -153,7 +153,7 @@ function Converter() {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      const transcribedText = response.data.transcribed_text;
+      const transcribedText = response.data.transcript;
       if (transcribedText) {
         setInputText(transcribedText);
         await handleConvert(false, null, transcribedText);
