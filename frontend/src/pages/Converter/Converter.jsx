@@ -144,7 +144,7 @@ function Converter() {
     setShowVoiceOptions(false);
 
     const formData = new FormData();
-    formData.append("audio", file);
+    formData.append("file", file);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/api/voice/voice-input`,
