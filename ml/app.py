@@ -192,23 +192,19 @@ async def extract_and_convert_ingredients(file: UploadFile = File(...)):
 async def voice_input(file: UploadFile = File(...)):
     try:
         contents = await file.read()
-
-        # Load the uploaded audio bytes with pydub
-        audio = AudioSegment.from_file(io.BytesIO(contents))
-
-        # Convert audio to 16kHz mono WAV in memory
-        audio = audio.set_frame_rate(16000).set_channels(1).set_sample_width(2)  # 16-bit PCM
-
         temp_wav = "temp_audio.wav"
-        audio.export(temp_wav, format="wav")
+        with open(temp_wav, "wb") as f:
+            f.write(contents)
 
-        transcript = transcribe_audio(temp_wav)
+        transcript = voice_to_text(temp_wav)
 
         if not transcript:
-            return {"transcript": "", "message": "No speech detected in the audio."}
+            raise HTTPException(status_code=400, detail="Could not transcribe any speech.")
+
 
         return {
             "transcript": transcript,
+            # "conversion_result": result
         }
     except Exception as e:
         logger.error(f"❌ Error in /voice-input/: {e}", exc_info=True)
