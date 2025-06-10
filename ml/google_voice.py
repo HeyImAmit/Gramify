@@ -35,17 +35,13 @@ def record_audio(filename=WAVE_OUTPUT_FILENAME):
     wf.close()
 
 def transcribe_audio(filename: str) -> str:
-    """
-    Transcribes the given WAV audio file using Google Cloud Speech-to-Text API.
-    Assumes audio is 16kHz, LINEAR16 PCM WAV.
-    """
     client = speech.SpeechClient()
 
     with open(filename, "rb") as audio_file:
         content = audio_file.read()
 
     audio = speech.RecognitionAudio(content=content)
-    config = speech.SpeechRecognitionConfig(
+    config = speech.RecognitionConfig(  # ✅ fixed line
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
         sample_rate_hertz=RATE,
         language_code="en-US",
