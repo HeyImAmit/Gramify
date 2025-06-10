@@ -1,6 +1,8 @@
-# Gramify ✨
+# 🧁 Gramify✨: AI-Powered Precision Baking
+### _Selected in Top 105 for Google Solution Challenge 2025_
 
-![Gramify Logo](path/to/logo.png)
+> Convert vague baking instructions like "a cup of flour" into precise grams — intelligently, accurately, and interactively.
+
 
 *A modern, intuitive platform for accurate recipe measurements and smart cooking assistance.*
 
@@ -17,15 +19,19 @@
 ## 📖 Table of Contents
 
 - [About Gramify](#about-gramify)
-- [🌟 Key Features](#-key-features)
-- [📸 Screenshots](#-screenshots)
+- [🚀 What is Gramify?](#-what-is-gramify)
+- [💡 Why Gramify?](#-why-gramify)
+- [✨ Features](#-features)
 - [🚀 Live Demo](#-live-demo)
 - [🛠️ Installation](#️-installation)
   - [Prerequisites](#prerequisites)
   - [Local Setup](#local-setup)
 - [💡 Usage](#-usage)
 - [💻 Technologies Stack](#-technologies-stack)
+- [🧠 Future Scope](#-future-scope)
 - [🗺️ Roadmap (Coming Soon)](#️-roadmap-coming-soon)
+- [🏆 Recognition](#-recognition)
+- [👥 Team](#-team)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 - [📬 Contact](#-contact)
@@ -42,29 +48,86 @@ Powered by a robust backend and advanced machine learning models, Gramify contin
 
 ---
 
-## 🌟 Key Features
-
--   ⚖️ **Accurate Unit Conversion:** Effortlessly convert between grams, cups, teaspoons, ounces, milliliters, and more with a clean, intuitive interface.
--   🗣️ **Interactive Forum:** Join a passionate community to discuss recipes, ask culinary questions, and share your favorite cooking hacks.
--   🍳 **Expert Recipe Tips:** Access professional advice and cooking techniques curated by experienced chefs to elevate your dishes.
--   🎨 **Smooth & Modern UI/UX:** Enjoy a responsive, fast, and fluid user experience. Our minimalist and elegant design (with light and dark modes) is inspired by today's most popular interfaces.
--   🔧 **Robust Backend:** Built on a scalable and reliable backend architecture ensuring high performance and data integrity.
--   🧠 **Machine Learning Powered:** Benefit from intelligent features like enhanced recipe suggestions and ingredient recognition (with more ML features planned!).
--   📱 **Cross-Device Compatibility:** Fully responsive and optimized for a seamless experience on desktop, tablet, and mobile devices.
+## 🚀 What is Gramify?
+**Gramify** is an AI-based tool that transforms everyday baking instructions into accurate **gram measurements**. It leverages:
+- 🧠 **Natural Language Processing (NLP)** to extract ingredients, units, and quantities
+- 🔍 **Fuzzy matching** to correct ingredient typos
+- 🤖 **Machine learning** to predict densities and categories for unknown ingredients
+- ☁️ **MongoDB Atlas** to store and expand the knowledge base
+- ⚡ **FastAPI backend** for real-time API access
 
 ---
 
-## 📸 Screenshots
+## 💡 Why Gramify?
+In baking, vague phrases like:
+> “a teaspoon of sugar” or “a cup of coconot flour”
 
-*(It's highly recommended to add 2-3 screenshots or a GIF showcasing your application's interface and key features here.)*
+...can ruin recipes. **Gramify ensures**:
+- 📏 Accurate gram conversions
+- 💬 Suggestions for misspelled ingredients (e.g., “Did you mean ‘coconut flour’?”)
+- 🔄 Predictions for unknown ingredients
+- 🧪 Confirmation flow before adding new data
 
-*Example:*
 ---
+
+## ✨ Features
+- ✅ NLP-powered ingredient parsing  
+- 🔍 Typo correction using fuzzy matching  
+- 🔬 ML prediction for missing densities  
+- ☁️ MongoDB Atlas database  
+- 📡 FastAPI-powered RESTful API  
+- 🧪 Test suite using `pytest` + `FastAPI TestClient`  
+- 🖼️ OCR for extracting ingredients from handwritten/printed recipes  using Gemini API 2.5 
+- 🎙️ Voice-to-text input using Speech_recognition and Google Web API
+- 🗣️ Interactive Forum to discuss recipes, ask culinary questions, and share your favorite cooking hacks
+- 📱 Smooth & Modern UI/UX, Fully responsive and optimized for a seamless experience on desktop, tablet, and mobile devices.
+
+
+---
+
+## ⚙️ How FastAPI Works
+1. **Input:**
+```json
+{
+  "recipe_text": "2 cups of coconot flour",
+  "confirm": false
+}
+```
+
+2. **Response:**
+```json
+{
+  "message": "Did you mean 'coconut flour'?",
+  "suggested_ingredient": "coconut flour",
+  "confirm_conversion": false
+}
+```
+
+3. **Confirmation:**
+```json
+{
+  "recipe_text": "2 cups of coconot flour",
+  "confirm": true,
+  "confirmed_ingredient": "coconut flour"
+}
+```
+
+4. **Final Response:**
+```json
+{
+  "message": "2 cups of coconut flour weighs approximately 192.00 grams.",
+  "confirm_conversion": true
+}
+```
+
+---
+
+
 
 ## 🚀 Live Demo
 
-Experience Gramify live: [https://your-gramify-live-url.com](https://your-gramify-live-url.com)
-*(Don't forget to update this with your actual live URL!)*
+Experience Gramify live: [http://34.42.75.172:5000/](http://34.42.75.172:5000/)
+How to use: [http://34.42.75.172:5000/](http://34.42.75.172:5000/)
 
 ---
 
@@ -77,8 +140,7 @@ Follow these steps to get Gramify running locally on your machine.
 Make sure you have the following installed:
 * [Node.js](https://nodejs.org/) (which includes npm)
 * [Git](https://git-scm.com/)
-* [MongoDB](https://www.mongodb.com/try/download/community) (ensure your MongoDB server is running)
-
+* [Python](https://www.python.org/) - stable python 3.10 version 
 ### Local Setup
 
 1.  **Clone the repository:**
@@ -88,7 +150,7 @@ Make sure you have the following installed:
 
 2.  **Navigate to the project directory:**
     ```bash
-    cd Gramify
+    cd Gramify/backend
     ```
 
 3.  **Install dependencies:**
@@ -96,33 +158,13 @@ Make sure you have the following installed:
     npm install
     ```
 
-4.  **Set up Environment Variables:**
-    Create a `.env` file in the root of your project (or in the relevant backend folder if structured separately). Add necessary environment variables like:
-    ```env
-    MONGODB_URI=your_mongodb_connection_string
-    JWT_SECRET=your_jwt_secret_key
-    # Add any other API keys or configurations
-    ```
-    *(Note: You might need separate `.env` files for frontend and backend if they are in different directories and have different build processes.)*
-
-5.  **Start the development server(s):**
-    *(This might vary based on your project structure. If frontend and backend are separate, you might need to run them in different terminals.)*
+4.  **Start the development server(s):**
     ```bash
-    npm start
+    node server.js
     ```
-    If you have separate start scripts for frontend and backend (e.g., in a `client` and `server` folder):
-    ```bash
-    # For backend (from root or server folder)
-    cd server && npm install && npm start
 
-    # For frontend (from root or client folder, in a new terminal)
-    cd client && npm install && npm start
-    ```
-    *(Adjust the above commands based on your actual project structure and `package.json` scripts.)*
-
-
-6.  **Open your browser:**
-    Visit [http://localhost:3000](http://localhost:3000) (or the port your application runs on) to see Gramify in action!
+5.  **Open your browser:**
+    Visit [http://localhost:5000](http://localhost:5000) (or the port your application runs on) to see Gramify in action!
 
 ---
 
@@ -141,35 +183,45 @@ Once Gramify is running:
 
 Gramify is built with a modern and robust technology stack:
 
-* **Frontend:**
-    * React (with Hooks & Context API)
-    * React Router DOM
-    * Lucide React Icons
-* **Backend:**
-    * Node.js
-    * Express.js (for RESTful APIs and authentication)
-* **Database:**
-    * MongoDB (for storing user information, forum posts, recipes, etc.)
-* **Machine Learning Model Serving:**
-    * FastAPI
-* **Authentication:**
-    * JSON Web Tokens (JWT)
-* **Styling:**
-    * CSS3 (with Flexbox & Grid for layout)
-    * Responsive Design Principles
-* **Deployment:**
-    * *(e.g., Vercel, Netlify, Heroku, AWS, Google Cloud - Please specify your platform)*
+| Layer            | Technology                               |
+|------------------|------------------------------------------|
+| API Framework    | Python, FastAPI                          |
+| NLP              | SpaCy, TextBlob, word2number             |
+| ML               | Scikit-learn (FastText, Random Forest)   |
+| OCR              | Gemini API 2.5                           |
+| Voice-to-Text    | Speech_recognition + Google Web API      |
+| Database         | MongoDB Atlas                            |
+| Testing          | pytest, FastAPI TestClient               |
+| Frontend	       | React (Hooks & Context API)              |
+| Styling	         | CSS3 (Flexbox & Grid), Responsive Design |
+| Authentication	 | JSON Web Tokens (JWT)                    |
+| Deployment       | Google Cloud VM                          |
+                    
 
 ---
 
+## 🧠 Future Scope
+We're constantly working to make Gramify even better! Here are some features on our horizon:
+- 📱 WhatsApp or voice assistant integration
+- 📊 Nutrition calculator
+- 🌍 Multi-language ingredient support
+- 📦 Export to CSV for meal tracking apps
+
 ## 🗺️ Roadmap (Coming Soon)
 
-We're constantly working to make Gramify even better! Here are some features on our horizon:
+---
 
--   🖼️ **Image Upload:** Easily upload images of ingredients or dishes.
--   🎤 **Voice Input:** Interact with the app using voice commands for a hands-free cooking experience.
--   ➕ *More ML-powered features!*
--   *(Add other planned features here)*
+## 🏆 Recognition
+> 🥇 Selected among the **Top 105 teams in Google Solution Challenge 2025**
+> Built to empower home bakers and future AI kitchen assistants
+
+---
+
+## 👥 Team
+- **Aditya Goswami** — NLP, ML & FastAPI
+- **Subham Mohanty** — ML, OCR & Google-Cloud
+- **Amit Prasad Lal** — Full-Stack
+- **Sreetam Mohanty** — Backend Integrator
 
 ---
 
@@ -216,4 +268,4 @@ For any questions, suggestions, or collaborations, feel free to reach out:
 
 ---
 
-<p align="center">Happy Cooking with Gramify! 🍲</p>
+<p align="center">Happy Baking with Gramify! 🍰</p>
