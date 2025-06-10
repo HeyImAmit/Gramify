@@ -147,7 +147,7 @@ function Converter() {
     formData.append("audio", file);
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/voice/upload-audio`,
+        `${API_BASE_URL}/api/voice/voice-input`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
