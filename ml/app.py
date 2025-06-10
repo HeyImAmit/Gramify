@@ -21,6 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from gemini_model_loader import gemini_model
 from dotenv import load_dotenv
 from pydub import AudioSegment
+import subprocess
 
 load_dotenv()  # Loads variables from .env
 
@@ -189,16 +190,34 @@ async def extract_and_convert_ingredients(file: UploadFile = File(...)):
         return JSONResponse(status_code=500, content={"error": str(e)})
     
 @app.post("/voice-input/")
-async def voice_input(file: UploadFile = File(None)):  # file is optional now
+async def voice_input(file: UploadFile = File(None)):
     try:
         if file:
-            # Handle uploaded audio file
-            contents = await file.read()
-            temp_wav = "temp_audio.wav"
-            with open(temp_wav, "wb") as f:
-                f.write(contents)
+            raw_input_path = "raw_input_audio." + file.filename.split('.')[-1]
+            temp_wav = "converted_audio.wav"
+
+            # Save uploaded file
+            with open(raw_input_path, "wb") as f:
+                f.write(await file.read())
+
+            # Convert to 16kHz, mono, 16-bit PCM WAV using ffmpeg
+            command = [
+                "ffmpeg", "-y", "-i", raw_input_path,
+                "-ac", "1",                # mono
+                "-ar", "16000",            # 16 kHz
+                "-sample_fmt", "s16",      # 16-bit signed int
+                temp_wav
+            ]
+            subprocess.run(command, check=True)
+
+            # Transcribe converted audio
             transcript = transcribe_audio(temp_wav)
             source = "uploaded"
+
+            # Clean up
+            os.remove(raw_input_path)
+            os.remove(temp_wav)
+
         else:
             # Record from mic
             transcript = voice_to_text()
@@ -212,9 +231,11 @@ async def voice_input(file: UploadFile = File(None)):  # file is optional now
             "source": source
         }
 
+    except subprocess.CalledProcessError:
+        raise HTTPException(status_code=500, detail="FFmpeg audio conversion failed.")
     except Exception as e:
-        logger.error(f"❌ Error in /voice-input/: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
+        
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8080))
