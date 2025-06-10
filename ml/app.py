@@ -189,27 +189,32 @@ async def extract_and_convert_ingredients(file: UploadFile = File(...)):
         return JSONResponse(status_code=500, content={"error": str(e)})
     
 @app.post("/voice-input/")
-async def voice_input(file: UploadFile = File(...)):
+async def voice_input(file: UploadFile = File(None)):  # file is optional now
     try:
-        contents = await file.read()
-        temp_wav = "temp_audio.wav"
-        with open(temp_wav, "wb") as f:
-            f.write(contents)
-
-        transcript = voice_to_text(temp_wav)
+        if file:
+            # Handle uploaded audio file
+            contents = await file.read()
+            temp_wav = "temp_audio.wav"
+            with open(temp_wav, "wb") as f:
+                f.write(contents)
+            transcript = transcribe_audio(temp_wav)
+            source = "uploaded"
+        else:
+            # Record from mic
+            transcript = voice_to_text()
+            source = "microphone"
 
         if not transcript:
             raise HTTPException(status_code=400, detail="Could not transcribe any speech.")
 
-
         return {
             "transcript": transcript,
-            # "conversion_result": result
+            "source": source
         }
+
     except Exception as e:
         logger.error(f"❌ Error in /voice-input/: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
-
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8080))
