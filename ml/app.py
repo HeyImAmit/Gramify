@@ -53,11 +53,11 @@ async def lifespan(app: FastAPI):
         logger.error(f"❌ Failed to load SpaCy model: {e}")
         raise RuntimeError(f"Could not load SpaCy model: {e}")
 
-    # try:
-    #     ft_model = get_fasttext_model()
-    #     logger.info("✅ fastText model loaded.")
-    # except Exception as e:
-    #     logger.error(f"❌ Failed to load fastText model: {e}")
+    try:
+        ft_model = get_fasttext_model()
+        logger.info("✅ fastText model loaded.")
+    except Exception as e:
+        logger.error(f"❌ Failed to load fastText model: {e}")
 
     recipe_extractor = RecipeMeasurementExtractor(nlp_model=nlp_model)
     recipe_converter = RecipeConverter()
