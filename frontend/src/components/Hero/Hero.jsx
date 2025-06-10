@@ -15,7 +15,7 @@ const Hero = () => {
         </p>
         <div className="hero-buttons">
           <button className="btn convert-btn" onClick={()=> navigate("/convert-units")}>Convert</button>
-          <button className="btn learn-btn">Learn more</button>
+          <button className="btn learn-btn" onClick={() => window.open("https://github.com/HeyImAmit/Gramify?tab=readme-ov-file#gramify-")}>Learn more</button>
         </div>
       </div>
       <div className="hero-image">
