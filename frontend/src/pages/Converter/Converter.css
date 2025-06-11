@@ -282,6 +282,7 @@ body {
   left: 0;
   animation: dropdownFadeSlideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   overflow: hidden;
+  max-width: 90vw;
   backdrop-filter: blur(12px);
   border: 1px solid #a855f7;
   user-select: none;
@@ -420,6 +421,7 @@ body {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -449,11 +451,13 @@ body {
 }
 
 @keyframes pulseDot {
+
   0%,
   100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.5);
     opacity: 0.5;
@@ -461,19 +465,22 @@ body {
 }
 
 @keyframes pulseBackground {
+
   0%,
   100% {
     background-color: rgba(255, 0, 0, 0.1);
   }
+
   50% {
     background-color: rgba(255, 0, 0, 0.2);
   }
 }
+
 /* ======= RESPONSIVE ADDITIONS ======= */
 /* Mobile-first approach for all devices */
 
-/* Base responsive adjustments */
-@media (max-width: 768px) {
+/* Tablet and smaller screens (≤820px) */
+@media (max-width: 820px) {
   .chat-container {
     padding: 1.5rem 0.75rem;
   }
@@ -494,11 +501,13 @@ body {
   .input-form {
     display: flex;
     align-items: center;
-    gap: 0.2rem; /* slightly smaller gap */
-    padding: 0.4rem; /* slightly smaller padding */
+    gap: 0.1rem;
+    padding: 0.4rem;
     width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
     flex-wrap: nowrap;
   }
 
@@ -546,14 +555,69 @@ body {
     font-size: 18px;
   }
 
+  /* Voice dropdown responsive adjustments for screens ≤820px */
+  .voice-dropdown-container {
+    position: relative;
+    overflow: visible;
+  }
+
   .voice-dropdown-menu {
-    min-width: 160px; /* slightly narrower menu */
-    max-height: 200px;
+    min-width: 180px;
+    max-width: calc(100vw - 2rem);
+    max-height: 220px;
+    position: absolute;
+    top: 110%;
+    right: 0;
+    left: auto;
+    transform: none;
+    box-sizing: border-box;
+  }
+
+  .voice-dropdown-menu::before {
+    left: auto;
+    right: 15px;
+    transform: none;
   }
 
   .voice-dropdown-item {
-    padding: 8px 16px;
+    padding: 10px 16px;
     font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .voice-dropdown-item:hover,
+  .voice-dropdown-item:focus {
+    padding-left: 14px;
+  }
+}
+
+/* Base responsive adjustments for medium screens */
+@media (max-width: 768px) {
+
+  /* Voice dropdown adjustments for screens ≤768px */
+  .voice-dropdown-menu {
+    min-width: 160px;
+    max-width: calc(100vw - 1.5rem);
+    max-height: 200px;
+    right: 0;
+    left: auto;
+  }
+
+  .voice-dropdown-menu::before {
+    right: 12px;
+    left: auto;
+  }
+
+  .voice-dropdown-item {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+
+  .voice-dropdown-item:hover,
+  .voice-dropdown-item:focus {
+    padding-left: 12px;
   }
 }
 
@@ -580,11 +644,15 @@ body {
   .input-form {
     display: flex;
     align-items: center;
-    gap: 0.1rem; /* remove almost all gap */
-    padding: 0.3rem; /* smaller padding */
+    gap: 0.1rem;
+    /* remove almost all gap */
+    padding: 0.3rem;
+    /* smaller padding */
     width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
     flex-wrap: nowrap;
   }
 
@@ -596,7 +664,8 @@ body {
   }
 
   .prompt-input::placeholder {
-    font-size: 0.75rem; /* smaller placeholder text */
+    font-size: 0.75rem;
+    /* smaller placeholder text */
   }
 
   .submit-button,
@@ -629,15 +698,40 @@ body {
     padding: 0 0.4rem;
   }
 
+  /* Voice dropdown for small mobile screens */
   .voice-dropdown-menu {
     min-width: 140px;
+    max-width: calc(100vw - 1rem);
     max-height: 180px;
-    font-size: 0.8rem;
+    right: 0;
+    left: auto;
+    transform: none;
+  }
+
+  .voice-dropdown-menu::before {
+    right: 10px;
+    left: auto;
+    transform: none;
   }
 
   .voice-dropdown-item {
     padding: 6px 12px;
     font-size: 0.8rem;
+  }
+
+  .voice-dropdown-item:hover,
+  .voice-dropdown-item:focus {
+    padding-left: 10px;
+  }
+
+  .voice-dropdown-item {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+
+  .voice-dropdown-item:hover,
+  .voice-dropdown-item:focus {
+    padding-left: 12px;
   }
 }
 
@@ -664,11 +758,15 @@ body {
   .input-form {
     display: flex;
     align-items: center;
-    gap: 0.05rem; /* nearly zero gap */
-    padding: 0.2rem; /* minimal padding */
+    gap: 0.05rem;
+    /* nearly zero gap */
+    padding: 0.2rem;
+    /* minimal padding */
     width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
     flex-wrap: nowrap;
   }
 
@@ -680,7 +778,8 @@ body {
   }
 
   .prompt-input::placeholder {
-    font-size: 0.7rem; /* shrink placeholder further */
+    font-size: 0.7rem;
+    /* shrink placeholder further */
   }
 
   .submit-button,
@@ -713,17 +812,102 @@ body {
     padding: 0 0.3rem;
   }
 
+  /* Voice dropdown for extra small screens */
   .voice-dropdown-menu {
     min-width: 120px;
+    max-width: calc(100vw - 0.8rem);
     max-height: 160px;
-    font-size: 0.75rem;
+    right: 0;
+    left: auto;
+    transform: none;
+  }
+
+  .voice-dropdown-menu::before {
+    right: 8px;
+    left: auto;
+    transform: none;
   }
 
   .voice-dropdown-item {
     padding: 5px 10px;
     font-size: 0.75rem;
   }
+
+  .voice-dropdown-item:hover,
+  .voice-dropdown-item:focus {
+    padding-left: 8px;
+  }
+
+  .voice-dropdown-item {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .voice-dropdown-item:hover,
+  .voice-dropdown-item:focus {
+    padding-left: 10px;
+  }
 }
+
+/* Special handling for very narrow screens */
+@media (max-width: 320px) {
+  .voice-dropdown-menu {
+    min-width: 100px;
+    max-width: calc(100vw - 0.6rem);
+    max-height: 140px;
+    right: 0;
+    left: auto;
+    transform: none;
+  }
+
+  .voice-dropdown-menu::before {
+    right: 6px;
+    left: auto;
+    transform: none;
+  }
+
+  .voice-dropdown-item {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  .voice-dropdown-item:hover,
+  .voice-dropdown-item:focus {
+    padding-left: 6px;
+  }
+}
+
+/* Remove the old generic mobile positioning rule */
+@media (max-width: 768px) {
+  .voice-dropdown-container {
+    position: relative;
+  }
+}
+
+@media (max-width: 820px) {
+  .parent-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 820px) {
+  .voice-dropdown-menu {
+    left: auto;
+    right: 0;
+    top: 100%;
+    transform: translateY(10px);
+  }
+}
+
+@media (max-width: 400px) {
+  .voice-dropdown-menu {
+    left: auto;
+    right: 0;
+    width: 90vw;
+  }
+}
+
 
 /* Landscape mode adjustments */
 @media (max-height: 500px) and (orientation: landscape) {
@@ -743,6 +927,11 @@ body {
   .response-message {
     max-height: 40vh;
     overflow-y: auto;
+  }
+
+  /* Voice dropdown adjustments for landscape */
+  .voice-dropdown-menu {
+    max-height: 150px;
   }
 }
 
@@ -774,4 +963,50 @@ body {
 .popup-buttons .blue-button {
   background-color: #007bff;
   color: white;
+}
+@media (max-width: 400px) {
+  .voice-dropdown-menu {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) translateY(10px) !important;
+    min-width: 200px;
+    width: max-content;
+    max-width: 90vw;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  .voice-dropdown-menu::before {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .voice-dropdown-item {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 360px) {
+  .voice-dropdown-menu {
+    left: 50% !important;
+    transform: translateX(-50%) translateY(10px) !important;
+    min-width: 160px;
+    max-width: 95vw;
+    width: max-content;
+    padding: 0.25rem 0;
+    box-sizing: border-box;
+    text-align: left;
+  }
+
+  .voice-dropdown-menu::before {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .voice-dropdown-item {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+  }
 }
