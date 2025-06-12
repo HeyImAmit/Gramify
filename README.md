@@ -127,7 +127,7 @@ In baking, vague phrases like:
 ## 🚀 Live Demo
 
 * Experience Gramify live: [http://34.42.75.172:5000/](http://34.42.75.172:5000/)
-* How to use: [http://34.42.75.172:5000/](http://34.42.75.172:5000/)
+* How to use: [Demo_link](https://drive.google.com/file/d/1W0DPjCoYrVjAck7vl2H4IQBvC-jZnp3-/view?usp=drivesdk)
 
 ---
 
