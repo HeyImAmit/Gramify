@@ -595,10 +595,6 @@ body {
 
 /* Base responsive adjustments for medium screens */
 @media (max-width: 768px) {
-<<<<<<< HEAD
-=======
-
->>>>>>> 705d8db23fc108b9a64e22d578ba39a0b6340592
   /* Voice dropdown adjustments for screens ≤768px */
   .voice-dropdown-menu {
     min-width: 160px;
@@ -850,7 +846,6 @@ body {
   .voice-dropdown-item:focus {
     padding-left: 10px;
   }
-<<<<<<< HEAD
 }
 
 /* Special handling for very narrow screens */
@@ -910,8 +905,6 @@ body {
     right: 0;
     width: 90vw;
   }
-=======
->>>>>>> 705d8db23fc108b9a64e22d578ba39a0b6340592
 }
 
 /* Special handling for very narrow screens */
