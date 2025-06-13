@@ -5,8 +5,6 @@ import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import fs from "fs";
-import FormData from "form-data";
 
 import { connectDB } from "./config/db.js";
 import forumRoute from "./routes/forumRoute.js";
@@ -20,7 +18,7 @@ const app = express();
 const upload = multer({ dest: "uploads/" });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const FASTAPI_BASE_URL = "http://34.42.75.172:8000";
+const FASTAPI_BASE_URL = process.env.FASTAPI_URL || "http://34.42.75.172:8000";
 
 app.use(express.json());
 app.use(cors());
@@ -33,18 +31,14 @@ app.use("/api/user", authRoute);
 app.use("/api/voice", voiceRoute);
 app.use("/api/image", imageRoute);
 
+// Proxy FastAPI calls
 app.post("/convert", async (req, res) => {
   try {
-    console.log("Received request on /convert:", req.body);
     const response = await axios.post(`${FASTAPI_BASE_URL}/convert/`, req.body);
-    console.log("Response from FastAPI:", response.data);
     res.json(response.data);
   } catch (error) {
-    console.error("❌ Error in /convert:", error.message);
-    if (error.response) {
-      console.error("❌ FastAPI responded with:", error.response.data);
-    }
-    res.status(500).json({ error: "Failed to convert recipe ingredient." });
+    console.error("Error in /convert:", error.message);
+    res.status(500).json({ error: "Failed to convert." });
   }
 });
 
@@ -53,12 +47,7 @@ app.post("/refresh-data", async (req, res) => {
     const response = await axios.post(`${FASTAPI_BASE_URL}/refresh-data/`);
     res.json(response.data);
   } catch (error) {
-    console.error(
-      "Error in /refresh-data:",
-      error.message,
-      error.response?.data
-    );
-    res.status(500).json({ error: "Failed to refresh ingredient data." });
+    res.status(500).json({ error: "Failed to refresh data." });
   }
 });
 
@@ -67,27 +56,18 @@ app.get("/ingredients", async (req, res) => {
     const response = await axios.get(`${FASTAPI_BASE_URL}/ingredients/`);
     res.json(response.data);
   } catch (error) {
-    console.error(
-      "Error in /ingredients:",
-      error.message,
-      error.response?.data
-    );
     res.status(500).json({ error: "Failed to get ingredients." });
   }
 });
 
 app.get("/ingredients/:ingredientName", async (req, res) => {
-  const name = req.params.ingredientName;
   try {
-    const response = await axios.get(`${FASTAPI_BASE_URL}/ingredients/${name}`);
+    const response = await axios.get(
+      `${FASTAPI_BASE_URL}/ingredients/${req.params.ingredientName}`
+    );
     res.json(response.data);
   } catch (error) {
-    console.error(
-      `Error fetching ingredient '${name}':`,
-      error.message,
-      error.response?.data
-    );
-    res.status(500).json({ error: `Failed to get ingredient: ${name}` });
+    res.status(500).json({ error: "Failed to get ingredient." });
   }
 });
 
@@ -99,27 +79,12 @@ app.post("/ingredients", async (req, res) => {
     );
     res.json(response.data);
   } catch (error) {
-    console.error(
-      "Error in /ingredients:",
-      error.message,
-      error.response?.data
-    );
-    res.status(500).json({ error: "Failed to add new ingredient." });
+    res.status(500).json({ error: "Failed to add ingredient." });
   }
 });
 
-// Frontend serving temporarily disabled for testing
-app.use(express.static(path.join(__dirname, "public")));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-const PORT = 5000;
+// No frontend serving — handled by Vercel
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Backend server running on http://localhost:${PORT}`);
+  console.log(`✅ Backend server running on port ${PORT}`);
 });
